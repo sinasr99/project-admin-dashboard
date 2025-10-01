@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+@font-face {
+    font-family: "Roboto";
+    src: url("../../public/Roboto-Regular.ttf");
+    font-display: swap;
+}
+
+@theme {
+    --font-roboto: "Roboto";
+
+    --color-background-light: #e8e7e7;
+    --color-background-dark: #404040;
+}
+
+/* --------------------------- CSS Reset ----------------------------- */
+/* Chrome, Safari, Edge */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+    border: none;
+    outline: none;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+
+#root {
+    font-family: var(--font-roboto), sans-serif;
+    height: 100vh;
+    background-color: var(--color-background-light);
+}
+
+.dark #root {
+    background-color: var(--color-background-dark);
+}
+
+.placeholder-top {
+    background-color: white;
+    bottom: unset;
+    font-size: var(--text-sm);
+    top: -16px !important;
+    left: 3px !important;
+}
+
+.text-shadow {
+    text-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
+}
