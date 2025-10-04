@@ -20,7 +20,7 @@ const Auth: FC = () => {
               return false
           }
 
-          return false
+          return saved
       }catch (err){
           localStorage.setItem(key, JSON.stringify(false))
           return false
@@ -30,7 +30,7 @@ const Auth: FC = () => {
     return (
         <div className="auth-root bg-bg-color h-full">
             {
-                isLoginMode ? <Login/> : <Register/>
+                isLoginMode ? <Login switchAuth={setIsLoginMode}/> : <Register switchAuth={setIsLoginMode}/>
             }
         </div>
     )
