@@ -1,4 +1,4 @@
-import {Dispatch, FC, SetStateAction, useEffect, useRef, useState} from "react";
+import {Dispatch, FC, SetStateAction, useCallback, useEffect, useRef, useState} from "react";
 import {FaEye, FaEyeSlash} from "react-icons/fa";
 import phoneSchema from "../validations/phoneValidation";
 import {ValidationError} from "yup"
@@ -41,7 +41,15 @@ const Input: FC<InputProps> = ({type, placeholder, setValue, value, setErrorsCou
     }
 
     const switchInputType = () => {
-        focusInput()
+        setTimeout(() => {
+            focusInput()
+            const input = inputRef.current
+
+            if (input) {
+                input.setSelectionRange(input.value.length, input.value.length)
+            }
+        }, 0.1)
+
         if (inputType === "text") {
             setInputType("password")
         } else {
@@ -49,17 +57,7 @@ const Input: FC<InputProps> = ({type, placeholder, setValue, value, setErrorsCou
         }
     }
 
-    useEffect(() => {
-        if (value.length) {
-            spanRef.current?.classList.add("placeholder-top")
-        } else {
-            spanRef.current?.classList.remove("placeholder-top")
-        }
-
-        checkInputValid().then()
-    }, [value]);
-
-    const checkInputValid = async () => {
+    const checkInputValid = useCallback(async () => {
         switch (type) {
             case "text": {
                 try {
@@ -104,7 +102,6 @@ const Input: FC<InputProps> = ({type, placeholder, setValue, value, setErrorsCou
                 break
             }
             case "password": {
-                console.log("password => ", value)
                 try {
                     await passwordValidation.validate({password: value}, {abortEarly: false})
                     setErrors([])
@@ -112,7 +109,6 @@ const Input: FC<InputProps> = ({type, placeholder, setValue, value, setErrorsCou
                 } catch (err) {
                     if (err instanceof ValidationError) {
                         const errors: string[] = err.inner.map(err => err.message)
-                        console.log("errors => ", errors)
                         setErrors(errors)
                         setErrorsCount(errors.length)
                     }
@@ -120,7 +116,17 @@ const Input: FC<InputProps> = ({type, placeholder, setValue, value, setErrorsCou
                 break
             }
         }
-    }
+    },[setErrorsCount, type,value])
+
+    useEffect(() => {
+        if (value.length) {
+            spanRef.current?.classList.add("placeholder-top")
+        } else {
+            spanRef.current?.classList.remove("placeholder-top")
+        }
+
+        checkInputValid().then()
+    }, [value, checkInputValid]);
 
     return (
         <div>
@@ -129,7 +135,7 @@ const Input: FC<InputProps> = ({type, placeholder, setValue, value, setErrorsCou
             <span ref={spanRef} onClick={focusInput}
                   className="absolute transition-all ease-in-out duration-200 top-0 bottom-0 px-3 text-black/50 leading-9 my-auto">{placeholder}</span>
                 <input value={value} onChange={e => setValue(e.target.value)} onBlur={inputBlur} ref={inputRef}
-                       type={(inputType === "password" || inputType === "text" || inputType === "email") ? inputType : "text"}
+                       type={(type === "password" || type === "text" || type === "email") ? inputType : "text"}
                        className={`w-full outline-none p-2 h-9 bg-white ${value.length ? "h-12 pb-[2px] pt-4 " : ""} focus:h-12 ${type === "password" ? "pr-10" : ""} focus:pt-4 focus:pb-[2px] font-roboto bg-white border-solid border-2 transition-all ease-in-out duration-200 ${errors.length ? "border-red-300 focus:border-red-700" : "border-black/20 focus:border-black/60"}  rounded-md`}/>
                 {
                     type === "password" ? <>

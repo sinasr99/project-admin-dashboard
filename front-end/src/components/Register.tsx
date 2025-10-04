@@ -1,7 +1,8 @@
-import {FC, ReactNode, useReducer, useState} from "react";
+import {Dispatch, FC, ReactNode, SetStateAction, useCallback, useEffect, useReducer, useState} from "react";
 import {IoTriangle} from "react-icons/io5";
 import Input from "./Input";
 import Input4Digit from "./Input4Digit";
+import getClassByEmailTimer from "../helperFunctions/getClassByTimer";
 
 type LevelShowType = {
     isShowLevelOne: boolean,
@@ -59,7 +60,11 @@ function getFromLocalStorage(): LevelShowType {
     }
 }
 
-const Register: FC = () => {
+type RegisterProps = {
+    switchAuth: Dispatch<SetStateAction<boolean>>
+}
+
+const Register: FC<RegisterProps> = ({switchAuth}) => {
     const [levelType, dispatchLevelType] = useReducer(setLevelType, getFromLocalStorage())
 
     // Register Input Level One :
@@ -76,10 +81,33 @@ const Register: FC = () => {
 
     // Input 4Digit Email validation :
     const [codeEmail, setCodeEmail] = useState<number>(0)
+    const [emailTimer, setEmailTimer] = useState<number>(120)
+    const [errorCodeEmailCount, setErrorCodeEmailCount] = useState<number>(0)
+
+    // Input 4Digit Phone validation :
+    const [codePhone, setCodePhone] = useState<number>(0)
+    const [phoneTimer, setPhoneTimer] = useState<number>(120)
+    const [errorCodePhoneCount, setErrorCodePhoneCount] = useState<number>(0)
 
     const isInValidRegister = (): boolean => {
         return Boolean(nameErrorsCount || emailErrorsCount || passwordErrorsCount || phoneErrorsCount)
     }
+
+    const checkCodeEmail = useCallback(() => {
+        if (codeEmail.toString() === "7777") {
+            dispatchLevelType("LEVEL-THREE")
+        } else {
+            setErrorCodeEmailCount(prev => prev + 1)
+        }
+    }, [codeEmail])
+
+    const checkCodePhone = useCallback(()=> {
+        if (codePhone.toString() === "7777") {
+
+        } else {
+            setErrorCodePhoneCount(prev => prev + 1)
+        }
+    }, [codePhone])
 
     const getElementByAuthType = (authType: LevelShowType): ReactNode => {
         switch (true) {
@@ -106,14 +134,138 @@ const Register: FC = () => {
                 return (
                     <>
                         <Input4Digit title="We sent code to your email" setInput={setCodeEmail}/>
+                        <span
+                            className={`timer-email ${getClassByEmailTimer(emailTimer)} text-center font-bold text-lg`}>
+                            {
+                                `${
+                                    Math.floor(emailTimer / 60)
+                                        .toString().padStart(2, "0")}:${(emailTimer % 60)
+                                    .toString()
+                                    .padStart(2, "0")
+                                }`
+                            }
+                        </span>
+                        <button
+                            onClick={checkCodeEmail}
+                            disabled={codeEmail.toString().length !== 4}
+                            className={`bg-green-700 w-[90%] ${codeEmail.toString().length === 4 ? "cursor-pointer hover:bg-green-800 opacity-100" : "cursor-not-allowed opacity-60"} mx-auto rounded-md h-9  transition-all ease-in-out duration-200  text-white font-bold flex items-center justify-center`}>Check
+                            code
+                        </button>
                     </>
                 )
             }
             case authType.isShowLevelThree: {
-                return <>Three</>
+                return <>
+                    <Input4Digit title="We sent code to your phone number" setInput={setCodePhone}/>
+                    <span className={`timer-email ${getClassByEmailTimer(phoneTimer)} text-center font-bold text-lg`}>
+                            {
+                                `${
+                                    Math.floor(phoneTimer / 60)
+                                        .toString().padStart(2, "0")}:${(phoneTimer % 60)
+                                    .toString()
+                                    .padStart(2, "0")
+                                }`
+                            }
+                        </span>
+                    <button
+                        onClick={checkCodePhone}
+                        disabled={codePhone.toString().length !== 4}
+                        className={`bg-green-700 w-[90%] ${codePhone.toString().length === 4 ? "cursor-pointer hover:bg-green-800 opacity-100" : "cursor-not-allowed opacity-60"} mx-auto rounded-md h-9  transition-all ease-in-out duration-200  text-white font-bold flex items-center justify-center`}>
+                        Check code
+                    </button>
+                </>
             }
         }
     }
+
+    useEffect(() => {
+        if (errorCodeEmailCount >= 5) {
+            dispatchLevelType("LEVEL-ONE")
+            setErrorCodeEmailCount(0)
+            setEmailTimer(120)
+            setPhoneTimer(120)
+        }
+    }, [errorCodeEmailCount]);
+
+    useEffect(() => {
+        if (errorCodePhoneCount >= 5) {
+            dispatchLevelType("LEVEL-ONE")
+            setErrorCodePhoneCount(0)
+            setPhoneTimer(120)
+            setEmailTimer(120)
+        }
+    }, [errorCodePhoneCount]);
+
+    useEffect(() => {
+        if (!levelType.isShowLevelTow) return
+
+        const intervalId = setInterval(() => {
+            setEmailTimer(prev => {
+                if (prev >= 1) {
+                    return prev - 1
+                }
+                clearInterval(intervalId)
+                dispatchLevelType("LEVEL-ONE")
+                return 120
+            })
+        }, 1000)
+
+        return () => clearInterval(intervalId)
+    }, [levelType.isShowLevelTow])
+
+    useEffect(() => {
+        if (!levelType.isShowLevelThree) return
+
+        const intervalId = setInterval(() => {
+            setPhoneTimer(prev => {
+                if (prev >= 1) {
+                    return prev - 1
+                }
+                clearInterval(intervalId)
+                dispatchLevelType("LEVEL-ONE")
+                return 120
+            })
+        }, 1000)
+
+        return () => clearInterval(intervalId)
+    }, [levelType.isShowLevelThree])
+
+    useEffect(() => {
+        const enterHandler = (event: KeyboardEvent) => {
+            if (event.key === "Enter") {
+                switch (true) {
+                    case levelType.isShowLevelOne: {
+                        if (!nameErrorsCount &&
+                            !emailErrorsCount &&
+                            !passwordErrorsCount &&
+                            !phoneErrorsCount) {
+                            dispatchLevelType("LEVEL-TWO")
+                        }
+                        break
+                    }
+                    case levelType.isShowLevelTow: {
+                        if (codeEmail.toString().length === 4) {
+                            checkCodeEmail()
+                        }
+                        break
+                    }
+                    case levelType.isShowLevelThree: {
+                        if (codePhone.toString().length === 4) {
+                            checkCodePhone()
+                        }
+                        break
+                    }
+                }
+            }
+        }
+
+        window.addEventListener("keyup", enterHandler)
+
+        return () => window.removeEventListener("keyup", enterHandler)
+    }, [nameErrorsCount, emailErrorsCount, phoneErrorsCount,
+        passwordErrorsCount, checkCodePhone, checkCodeEmail,
+        codePhone, codeEmail, levelType.isShowLevelThree, levelType.isShowLevelTow, levelType.isShowLevelOne
+    ]);
 
     return (
         <>
@@ -151,11 +303,21 @@ const Register: FC = () => {
                     </div>
                 </div>
             </div>
+
             <div className="form  bg-white rounded-md p-4 mx-auto w-[500px] flex flex-col gap-5">
                 <div className="header-form flex justify-center gap-1 items-center ">
                     <img className="w-8 h-8 object-cover" src="/images/icon-dashboard.png" alt="Icon Web Page"/>
                     <h5 className='form-title font-bold text-xl text-shadow '>Register form</h5>
                 </div>
+                {
+                    levelType.isShowLevelOne ?
+                        <button
+                            onClick={() => switchAuth(true)}
+                            className="switch-auth font-bold text-shadow w-3/4 h-7 mx-auto rounded-md cursor-pointer bg-sky-500 text-white transition-all ease-in-out duration-200 hover:scale-105">
+                            Dou you hava an account? then click to login !
+                        </button>
+                        : null
+                }
                 {
                     getElementByAuthType(levelType)
                 }
