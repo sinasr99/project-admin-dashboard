@@ -3,6 +3,7 @@ import {IoTriangle} from "react-icons/io5";
 import Input from "./Input";
 import Input4Digit from "./Input4Digit";
 import getClassByEmailTimer from "../helperFunctions/getClassByTimer";
+import Cookies from "js-cookie"
 
 type LevelShowType = {
     isShowLevelOne: boolean,
@@ -81,12 +82,12 @@ const Register: FC<RegisterProps> = ({switchAuth}) => {
 
     // Input 4Digit Email validation :
     const [codeEmail, setCodeEmail] = useState<number>(0)
-    const [emailTimer, setEmailTimer] = useState<number>(120)
+    const [emailTimer, setEmailTimer] = useState<number>(getEmailTimerFromCookie())
     const [errorCodeEmailCount, setErrorCodeEmailCount] = useState<number>(0)
 
     // Input 4Digit Phone validation :
     const [codePhone, setCodePhone] = useState<number>(0)
-    const [phoneTimer, setPhoneTimer] = useState<number>(120)
+    const [phoneTimer, setPhoneTimer] = useState<number>(getPhoneTimerFromCookie())
     const [errorCodePhoneCount, setErrorCodePhoneCount] = useState<number>(0)
 
     const isInValidRegister = (): boolean => {
@@ -96,18 +97,80 @@ const Register: FC<RegisterProps> = ({switchAuth}) => {
     const checkCodeEmail = useCallback(() => {
         if (codeEmail.toString() === "7777") {
             dispatchLevelType("LEVEL-THREE")
+            saveCookieTimer("phone-timer")
         } else {
             setErrorCodeEmailCount(prev => prev + 1)
         }
     }, [codeEmail])
 
-    const checkCodePhone = useCallback(()=> {
+    const checkCodePhone = useCallback(() => {
         if (codePhone.toString() === "7777") {
 
         } else {
             setErrorCodePhoneCount(prev => prev + 1)
         }
     }, [codePhone])
+
+    const resetAllTimers = () => {
+        Cookies.remove("email-time")
+        Cookies.remove("phone-time")
+    }
+
+    // Test
+    useEffect(() => {
+        if (levelType.isShowLevelOne) {
+            resetAllTimers()
+        }
+    }, [levelType.isShowLevelOne]);
+
+    function saveCookieTimer(key: string) {
+        const now = Date.now()
+        const expireDate = new Date(now + (120 * 1000))
+        Cookies.set(key, `${now}`, {path: "/", expires: expireDate})
+    }
+
+    function getPhoneTimerFromCookie(): number {
+        const phoneTimer = Cookies.get("phone-time")
+
+        if (!phoneTimer) {
+            saveCookieTimer("phone-time")
+            return 120
+        }
+
+        const phoneTimerNumber = +phoneTimer
+        if (!isNaN(phoneTimerNumber)) {
+            const currentTimer = Math.floor((Date.now() - phoneTimerNumber) / 1000)
+            const timer = 120 - currentTimer
+            return timer >= 1 ? timer : 120
+        }
+
+        saveCookieTimer("phone-time")
+        return 120
+    }
+
+    function getEmailTimerFromCookie(): number {
+        const emailTimer = Cookies.get("email-time")
+
+        if (!emailTimer) {
+            saveCookieTimer("email-time")
+            return 120
+        }
+
+        const emailTimerNumber = +emailTimer
+        if (!isNaN(emailTimerNumber)) {
+            const currentTimer = Math.floor((Date.now() - emailTimerNumber) / 1000)
+            const timer = 120 - currentTimer
+            return timer >= 1 ? timer : 120
+        }
+
+        saveCookieTimer("email-time")
+        return 120
+    }
+
+    const register = () => {
+        dispatchLevelType("LEVEL-TWO")
+        saveCookieTimer("email-time")
+    }
 
     const getElementByAuthType = (authType: LevelShowType): ReactNode => {
         switch (true) {
@@ -124,8 +187,8 @@ const Register: FC<RegisterProps> = ({switchAuth}) => {
                            placeholder="Enter your password"/>
                     <button
                         disabled={isInValidRegister()}
-                        onClick={() => dispatchLevelType("LEVEL-TWO")}
-                        className={`${isInValidRegister() ? "opacity-60 cursor-not-allowed" : "opacity-100 cursor-pointer hover:bg-green-800"} bg-green-600 transition-all ease-in-out duration-200  text-white w-[400px] rounded-md h-8 font-bold flex items-center justify-center mx-auto`}>Send
+                        onClick={() => register}
+                        className={`${isInValidRegister() ? "opacity-60 cursor-not-allowed" : "opacity-100 cursor-pointer hover:bg-green-800"} bg-green-600 transition-all ease-in-out duration-200  text-white w-full sm:w-[400px] rounded-md h-8 font-bold flex items-center justify-center mx-auto`}>Send
                         data
                     </button>
                 </>
@@ -133,7 +196,7 @@ const Register: FC<RegisterProps> = ({switchAuth}) => {
             case authType.isShowLevelTow: {
                 return (
                     <>
-                        <Input4Digit title="We sent code to your email" setInput={setCodeEmail}/>
+                        <Input4Digit key="email" title="We sent code to your email" setInput={setCodeEmail}/>
                         <span
                             className={`timer-email ${getClassByEmailTimer(emailTimer)} text-center font-bold text-lg`}>
                             {
@@ -156,7 +219,7 @@ const Register: FC<RegisterProps> = ({switchAuth}) => {
             }
             case authType.isShowLevelThree: {
                 return <>
-                    <Input4Digit title="We sent code to your phone number" setInput={setCodePhone}/>
+                    <Input4Digit key="phone" title="We sent code to your phone number" setInput={setCodePhone}/>
                     <span className={`timer-email ${getClassByEmailTimer(phoneTimer)} text-center font-bold text-lg`}>
                             {
                                 `${
@@ -240,6 +303,7 @@ const Register: FC<RegisterProps> = ({switchAuth}) => {
                             !passwordErrorsCount &&
                             !phoneErrorsCount) {
                             dispatchLevelType("LEVEL-TWO")
+                            saveCookieTimer("email-time")
                         }
                         break
                     }
@@ -269,51 +333,51 @@ const Register: FC<RegisterProps> = ({switchAuth}) => {
 
     return (
         <>
-            <div className="header p-5 flex items-center justify-center gap-10">
+            <div className="header py-4 xs:p-5 flex items-center justify-center gap-4 xs:gap-10">
                 <div
-                    className="level after:absolute after:top-0 after:bottom-0 after:my-auto after:w-10 after:h-1 after:right-0 after:-mr-10 after:bg-black/20  group relative flex items-center justify-center gap-2">
+                    className="level after:absolute after:top-0 after:bottom-0 after:my-auto after:w-10 after:h-1 after:right-0 after:-mr-10 after:bg-black/20 dark:after:bg-white/90   group relative flex items-center justify-center gap-2">
                     <span
-                        className={`number-level w-14 h-14 rounded-full flex items-center justify-center ${levelType.isShowLevelOne ? "bg-orange-500" : "bg-green-700"} text-white font-bold text-lg`}>1</span>
+                        className={`number-level w-9 h-9 sm:w-14 sm:h-14 rounded-full flex items-center justify-center ${levelType.isShowLevelOne ? "bg-orange-500" : "bg-green-700"} text-white font-bold text-lg`}>1</span>
                     <div
                         className="tooltip-wrapper opacity-0 invisible pointer-events-none group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible transition-all ease-in-out duration-200 absolute flex flex-col justify-center items-center top-full mx-auto w-fit pt-7">
                         <IoTriangle className="text-green-800 w-6 h-6 -mt-[25px]"/>
                         <span
-                            className="shadow-2xl z-20 bg-green-800 text-white p-2 rounded-md -mt-0.5 whitespace-nowrap">Getting Information Level</span>
+                            className="shadow-2xl z-20 text-xs p-1 sm:p-2 sm:text-base bg-green-800 text-white rounded-md -mt-0.5 whitespace-nowrap">Getting Information Level</span>
                     </div>
                 </div>
                 <div
-                    className="level after:absolute after:top-0 after:bottom-0 after:my-auto after:w-10 after:h-1 after:right-0 after:-mr-10 after:bg-black/20 group relative flex items-center justify-center gap-2">
+                    className="level after:absolute after:top-0 after:bottom-0 after:my-auto after:w-10 after:h-1 after:right-0 after:-mr-10 after:bg-black/20 dark:after:bg-white/90 group relative flex items-center justify-center gap-2">
                     <span
-                        className={`number-level w-14 h-14 rounded-full flex items-center justify-center ${levelType.isShowLevelTow ? "bg-orange-500" : "bg-green-700"} text-white font-bold text-lg`}>2</span>
+                        className={`number-level w-9 h-9 sm:w-14 sm:h-14 rounded-full flex items-center justify-center ${levelType.isShowLevelTow ? "bg-orange-500" : "bg-green-700"} text-white font-bold text-lg`}>2</span>
                     <div
                         className="tooltip-wrapper opacity-0 invisible pointer-events-none group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible transition-all ease-in-out duration-200 absolute flex flex-col justify-center items-center top-full mx-auto w-fit pt-7">
                         <IoTriangle className="text-green-800 w-6 h-6 -mt-[25px]"/>
                         <span
-                            className="shadow-2xl z-20 bg-green-800 text-white p-2 rounded-md -mt-0.5 whitespace-nowrap">Email Validation Level</span>
+                            className="shadow-2xl z-20 text-xs p-1 sm:p-2 sm:text-base bg-green-800 text-white rounded-md -mt-0.5 whitespace-nowrap">Email Validation Level</span>
                     </div>
                 </div>
                 <div className="level  group relative flex items-center justify-center gap-2">
                     <span
-                        className={`number-level w-14 h-14 rounded-full flex items-center justify-center ${levelType.isShowLevelThree ? "bg-orange-500" : "bg-green-700"} text-white font-bold text-lg`}>3</span>
+                        className={`number-level w-9 h-9 sm:w-14 sm:h-14 rounded-full flex items-center justify-center ${levelType.isShowLevelThree ? "bg-orange-500" : "bg-green-700"} text-white font-bold text-lg`}>3</span>
                     <div
                         className="tooltip-wrapper opacity-0 invisible pointer-events-none group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible transition-all ease-in-out duration-200 absolute flex flex-col justify-center items-center top-full mx-auto w-fit pt-7">
                         <IoTriangle className="text-green-800 w-6 h-6 -mt-[25px]"/>
                         <span
-                            className="shadow-2xl z-20  bg-green-800 text-white p-2 rounded-md -mt-0.5 whitespace-nowrap">Phone Number Validation Level</span>
+                            className="shadow-2xl z-20 text-xs p-1 sm:p-2 sm:text-base bg-green-800 text-white rounded-md -mt-0.5 whitespace-nowrap">Phone Number Validation Level</span>
                     </div>
                 </div>
             </div>
 
-            <div className="form  bg-white rounded-md p-4 mx-auto w-[500px] flex flex-col gap-5">
+            <div className="form bg-white dark:bg-zinc-700 rounded-md p-4 mx-auto w-full sm:w-[500px] flex flex-col gap-5">
                 <div className="header-form flex justify-center gap-1 items-center ">
                     <img className="w-8 h-8 object-cover" src="/images/icon-dashboard.png" alt="Icon Web Page"/>
-                    <h5 className='form-title font-bold text-xl text-shadow '>Register form</h5>
+                    <h5 className='form-title font-bold text-xl text-shadow dark:text-white'>Register form</h5>
                 </div>
                 {
                     levelType.isShowLevelOne ?
                         <button
                             onClick={() => switchAuth(true)}
-                            className="switch-auth font-bold text-shadow w-3/4 h-7 mx-auto rounded-md cursor-pointer bg-sky-500 text-white transition-all ease-in-out duration-200 hover:scale-105">
+                            className="switch-auth font-bold text-shadow text-xs w-full h-fit p-1 sm:text-base xs:w-3/4 sm:h-7 mx-auto rounded-md cursor-pointer bg-sky-500 text-white transition-all ease-in-out duration-200 hover:scale-105">
                             Dou you hava an account? then click to login !
                         </button>
                         : null

@@ -131,12 +131,12 @@ const Input: FC<InputProps> = ({type, placeholder, setValue, value, setErrorsCou
     return (
         <div>
             <div onClick={focusInput}
-                 className="input-wrapper border-solid w-[400px] relative mx-auto">
-            <span ref={spanRef} onClick={focusInput}
-                  className="absolute transition-all ease-in-out duration-200 top-0 bottom-0 px-3 text-black/50 leading-9 my-auto">{placeholder}</span>
+                 className="input-wrapper dark:text-white border-solid text-sm xs:text-base w-full xs:w-[400px] relative mx-auto">
+                <span ref={spanRef} onClick={focusInput}
+                  className="absolute transition-all ease-in-out duration-200 pb-1 top-0 bottom-0 px-3  dark:text-white text-black/50 my-auto leading-8 xs:leading-9">{placeholder}</span>
                 <input value={value} onChange={e => setValue(e.target.value)} onBlur={inputBlur} ref={inputRef}
                        type={(type === "password" || type === "text" || type === "email") ? inputType : "text"}
-                       className={`w-full outline-none p-2 h-9 bg-white ${value.length ? "h-12 pb-[2px] pt-4 " : ""} focus:h-12 ${type === "password" ? "pr-10" : ""} focus:pt-4 focus:pb-[2px] font-roboto bg-white border-solid border-2 transition-all ease-in-out duration-200 ${errors.length ? "border-red-300 focus:border-red-700" : "border-black/20 focus:border-black/60"}  rounded-md`}/>
+                       className={`w-full outline-none p-2 pt-2 h-8 xs:h-9 bg-white ${value.length ? "h-12 xs:h-12 pb-[2px] pt-2 xs:pt-4" : ""} focus:h-12 ${type === "password" ? "pr-10" : ""} xs:focus:pt-4 focus:pb-[2px] font-roboto bg-white dark:bg-zinc-700 border-solid border-2 transition-all ease-in-out duration-200 ${errors.length ? "border-red-700" : "border-black/20 dark:border-white dark:focus:border-white focus:border-black/60"}  rounded-md`}/>
                 {
                     type === "password" ? <>
                         {
@@ -152,7 +152,7 @@ const Input: FC<InputProps> = ({type, placeholder, setValue, value, setErrorsCou
             {
                 errors.length ?
                     <span
-                        className="font-bold w-[400px] mt-1 mx-auto text-red-600 line-clamp-2 overflow-hidden text-ellipsis">{errors[0]}</span>
+                        className="font-bold w-full xs:w-[400px] mt-1 mx-auto text-sm xs:text-base text-red-600 dark:text-orange-400 line-clamp-2 overflow-hidden text-ellipsis">{errors[0]}</span>
                     : null
             }
         </div>

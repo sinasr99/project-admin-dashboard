@@ -100,30 +100,30 @@ const Input4Digit: FC<Input4DigitProps> = ({setInput, title}) => {
     return (
         <>
             <h6 className="text-lg mb-4 font-bold text-center text-green-700">{title} 👌</h6>
-            <div className="inputs flex items-center justify-center gap-3">
+            <div className="inputs flex items-center justify-center gap-3 dark:text-white">
                 <input
                     ref={inputRefs[0]}
                     onKeyDown={e => changeInputsFocus(e, 0, code.code1)}
                     value={code.code1} onChange={e => dispatchCode({newValue: e.target.value, onCode: "code1"})}
-                    className="w-10 h-10 border-solid border-[1px] rounded-md border-black/50 text-center focus:outline-none font-bold text-xl"
+                    className="w-10 h-10 border-solid border-[1px] rounded-md border-black/50 dark:border-white text-center focus:outline-none font-bold text-xl"
                     type="text"/>
                 <input
                     ref={inputRefs[1]}
                     onKeyDown={e => changeInputsFocus(e, 1, code.code2)}
                     value={code.code2} onChange={e => dispatchCode({newValue: e.target.value, onCode: "code2"})}
-                    className="w-10 h-10 border-solid border-[1px] rounded-md border-black/50 text-center focus:outline-none font-bold text-xl"
+                    className="w-10 h-10 border-solid border-[1px] rounded-md border-black/50 dark:border-white text-center focus:outline-none font-bold text-xl"
                     type="text"/>
                 <input
                     ref={inputRefs[2]}
                     onKeyDown={e => changeInputsFocus(e, 2, code.code3)}
                     value={code.code3} onChange={e => dispatchCode({newValue: e.target.value, onCode: "code3"})}
-                    className="w-10 h-10 border-solid border-[1px] rounded-md border-black/50 text-center focus:outline-none font-bold text-xl"
+                    className="w-10 h-10 border-solid border-[1px] rounded-md border-black/50 dark:border-white text-center focus:outline-none font-bold text-xl"
                     type="text"/>
                 <input
                     ref={inputRefs[3]}
                     onKeyDown={e => changeInputsFocus(e, 3, code.code4)}
                     value={code.code4} onChange={e => dispatchCode({newValue: e.target.value, onCode: "code4"})}
-                    className="w-10 h-10 border-solid border-[1px] rounded-md border-black/50 text-center focus:outline-none font-bold text-xl"
+                    className="w-10 h-10 border-solid border-[1px] rounded-md border-black/50 dark:border-white text-center focus:outline-none font-bold text-xl"
                     type="text"/>
             </div>
         </>
