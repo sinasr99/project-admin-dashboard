@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @font-face {
     font-family: "Roboto";
     src: url("../../public/Roboto-Regular.ttf");
@@ -9,8 +11,94 @@
 @theme {
     --font-roboto: "Roboto";
 
-    --color-background-light: #e8e7e7;
-    --color-background-dark: #404040;
+    --color-milky: #e1dfdf;
+    --color-shimmer: #f6f6f6;
+    --color-dark-shimmer: #514e51;
+    --breakpoint-xs: 31rem;
+    --breakpoint-from-400: 400px;
+    --breakpoint-from-500: 500px;
+}
+
+/*
+ --------------------------- Helper Classes ---------------------------
+*/.shimmer-animation {
+      position: relative;
+      overflow: hidden;
+      background-color: #e0e0e0; /* رنگ پایه اسکلتون */
+  }
+
+.shimmer-animation::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -50%; /* شروع از خارج چپ */
+    width: 50%; /* پهنای نوار */
+    height: 100%;
+    background: linear-gradient(
+            to right,
+            transparent 0%,
+            white 50%,
+            transparent 100%
+    );
+    animation: shimmer 1.5s infinite linear;
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(200%);
+    }
+}
+
+/* حالت تاریک */
+.dark .shimmer-animation {
+    background-color: #333;
+}
+
+.dark .shimmer-animation::after {
+    background: linear-gradient(
+            to right,
+            transparent 0%,
+            rgba(255, 255, 255, 0.2) 50%,
+            transparent 100%
+    );
+}
+
+
+.box-shadow {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.dark .box-shadow {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.box-shadow-small {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+}
+
+.dark .box-shadow-small {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.25);
+}
+
+.big-z-index {
+    z-index: 999;
+}
+
+/*
+ --------------------------- Container ---------------------------
+*/
+.container {
+    margin: 0 auto;
+}
+
+/*
+ --------------------------- Custom Rechart ---------------------------
+*/
+.recharts-surface {
+    overflow: visible;
 }
 
 /*
@@ -36,9 +124,20 @@ input:-webkit-autofill {
     caret-color: black; /* رنگ کرسر */
 }
 
+.dark input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px var(--color-zinc-700) inset !important; /* رنگ پس‌زمینه رو سفید کن */
+    -webkit-text-fill-color: white !important; /* رنگ متن */
+    caret-color: white; /* رنگ کرسر */
+}
+
 input:-webkit-autofill:focus {
     -webkit-box-shadow: 0 0 0 1000px white inset !important;
     -webkit-text-fill-color: black !important;
+}
+
+.dark input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px var(--color-zinc-700) inset !important;
+    -webkit-text-fill-color: white !important;
 }
 
 
@@ -54,16 +153,24 @@ input[type=number] {
     background-color: var(--color-background-light);
 }
 
-.dark #root {
-    background-color: var(--color-background-dark);
+body {
+    background-color: var(--color-milky);
+}
+
+.dark body {
+    background-color: var(--color-zinc-900);
 }
 
 .placeholder-top {
     background-color: white;
-    bottom: unset;
     font-size: var(--text-sm);
+    bottom: unset;
     top: -16px !important;
     left: 3px !important;
+}
+
+.dark .placeholder-top {
+    background-color: var(--color-zinc-700);
 }
 
 .text-shadow {

@@ -4,6 +4,7 @@ import React, {
 import Input from "./Input";
 import Input4Digit from "./Input4Digit";
 import {useNavigate} from "react-router-dom";
+import Cookies from "js-cookie";
 
 type LoginProps = {
     switchAuth: Dispatch<SetStateAction<boolean>>
@@ -17,6 +18,8 @@ type loginTypeProps = {
 type actionLoginTypeProps = {
     switchTo: "OTP" | "LOGIN"
 }
+
+type otpLevelType = {getPhone: boolean, checkCode: boolean}
 
 const Login: FC<LoginProps> = ({switchAuth}) => {
     const navigate = useNavigate()
@@ -32,20 +35,42 @@ const Login: FC<LoginProps> = ({switchAuth}) => {
     const [passwordErrorsCount, setPasswordErrorsCount] = useState<number>(0)
 
     // OTP Levels :
-    const [otpLevels, setOtpLevels] = useState({getPhone: true, checkCode: false})
+    const [otpLevels, setOtpLevels] = useState<otpLevelType>(getOtpLevelFromLocal())
 
     // OTP Inputs :
     const [inputPhone, setInputPhone] = useState<string>("")
     const [inputCode, setInputCode] = useState<number>(0)
 
     // OTP Code Timer :
-    const [phoneTimer, serPhoneTimer] = useState<number>(120)
+    const [phoneTimer, serPhoneTimer] = useState<number>(getPhoneTimerFromCookie())
 
     // OTP Errors :
     const [phoneErrorsCount, setPhoneErrorsCount] = useState<number>(0)
 
     function changeDefaultLoginType(newValue: loginTypeProps) {
         localStorage.setItem("login-type", JSON.stringify(newValue))
+    }
+
+    function getPhoneTimerFromCookie(): number {
+        const phoneTimer = Cookies.get("code-timer")
+        const phoneTimerNumber = phoneTimer ? +phoneTimer : 0
+        const now = Date.now()
+
+        if (phoneTimer && !isNaN(phoneTimerNumber)) {
+
+            const currentSecond =Math.floor( (now - phoneTimerNumber) / 1000)
+            const timer = 120 - currentSecond
+            return timer >= 1 ? timer : 120
+        }
+
+        saveCookieTimer("code-timer")
+        return 120
+    }
+
+    function saveCookieTimer(key: string) {
+        const now = Date.now()
+        const expireDate = new Date(now + (120 * 1000))
+        Cookies.set(key, `${now}`, {path: "/", expires: expireDate})
     }
 
     function getDefaultLoginType(): loginTypeProps {
@@ -74,7 +99,7 @@ const Login: FC<LoginProps> = ({switchAuth}) => {
     }
 
     function setLoginType(state: loginTypeProps, action: actionLoginTypeProps): loginTypeProps {
-
+        console.log("dispatch login type run")
         switch (action.switchTo) {
             case "LOGIN": {
                 const newValue: loginTypeProps = {login: true, otp: false}
@@ -105,6 +130,36 @@ const Login: FC<LoginProps> = ({switchAuth}) => {
         setOtpLevels({getPhone: false, checkCode: true})
     }
 
+    function getOtpLevelFromLocal (): otpLevelType {
+        const defaultOtpLevel: otpLevelType = {getPhone: true, checkCode: false}
+        const key = "otp-level"
+        const otpLevel = localStorage.getItem(key)
+
+        try {
+
+            if (!otpLevel) {
+                localStorage.setItem(key, JSON.stringify(defaultOtpLevel))
+                return defaultOtpLevel
+            }
+
+            const otpLevelParsed: otpLevelType = JSON.parse(otpLevel)
+
+            if ("checkCode" in otpLevelParsed && "getPhone" in otpLevelParsed) {
+                return otpLevelParsed
+            }
+
+            localStorage.setItem(key, JSON.stringify(defaultOtpLevel))
+            return defaultOtpLevel
+        } catch (err) {
+            localStorage.setItem(key, JSON.stringify(defaultOtpLevel))
+            return defaultOtpLevel
+        }
+    }
+
+    useEffect(() => {
+        localStorage.setItem("otp-level", JSON.stringify(otpLevels))
+    }, [otpLevels]);
+
     const checkCode = useCallback(() => {
         if (inputCode.toString() === "7777") {
             navigate("/dashboard")
@@ -115,6 +170,12 @@ const Login: FC<LoginProps> = ({switchAuth}) => {
 
         serPhoneTimer(120)
     }, [inputCode, navigate])
+
+    useEffect(() => {
+        if (otpLevels.getPhone) {
+            Cookies.remove("code-timer")
+        }
+    }, [otpLevels.getPhone])
 
     const login = useCallback(() => {
         if (inputEmail === "sina123@gmail.com" && inputPassword === "Ss1383@#$") {
@@ -145,6 +206,14 @@ const Login: FC<LoginProps> = ({switchAuth}) => {
         return () => clearInterval(intervalId)
     }, [otpLevels.checkCode]);
 
+    const switchAuthentication = async () => {
+        await new Promise((resolve) => {
+            setOtpLevels({getPhone: true, checkCode: false})
+            resolve(true)
+        })
+        switchAuth(false)
+    }
+
     useEffect(() => {
         const enterHandler = (event: KeyboardEvent) => {
             if (event.key !== "Enter") return
@@ -158,22 +227,22 @@ const Login: FC<LoginProps> = ({switchAuth}) => {
 
             if (loginType.otp) {
 
-               switch (true) {
-                   case otpLevels.getPhone: {
-                       if (!phoneErrorsCount) {
-                           sendCode()
-                       }
+                switch (true) {
+                    case otpLevels.getPhone: {
+                        if (!phoneErrorsCount) {
+                            sendCode()
+                        }
 
-                       break
-                   }
-                   case otpLevels.checkCode: {
-                       if (inputCode.toString().length === 4) {
-                           checkCode()
-                       }
+                        break
+                    }
+                    case otpLevels.checkCode: {
+                        if (inputCode.toString().length === 4) {
+                            checkCode()
+                        }
 
-                       break
-                   }
-               }
+                        break
+                    }
+                }
 
             }
         }
@@ -181,7 +250,7 @@ const Login: FC<LoginProps> = ({switchAuth}) => {
         window.addEventListener("keyup", enterHandler)
 
         return () => window.removeEventListener("keyup", enterHandler)
-    }, [loginType, checkCode, emailErrorsCount, inputCode, login, otpLevels, passwordErrorsCount,phoneErrorsCount]);
+    }, [loginType, checkCode, emailErrorsCount, inputCode, login, otpLevels, passwordErrorsCount, phoneErrorsCount]);
 
     const getClassByEmailTimer = (timer: number): string => {
         switch (true) {
@@ -196,19 +265,19 @@ const Login: FC<LoginProps> = ({switchAuth}) => {
 
     return (
         <div className="login-root h-full flex items-center justify-center">
-            <div className="form bg-white rounded-md p-4 mx-auto w-[500px] flex flex-col gap-5">
+            <div className="form bg-white dark:bg-zinc-700 rounded-md p-4 mx-auto w-full sm:w-[500px] flex flex-col gap-5">
                 <div className="header-form flex justify-center gap-1 items-center ">
                     <img className="w-8 h-8 object-cover" src="/images/icon-dashboard.png" alt="Icon Web Page"/>
-                    <h5 className='form-title font-bold text-xl text-shadow '>Login form</h5>
+                    <h5 className='form-title font-bold text-xl text-shadow dark:text-white'>Login form</h5>
                 </div>
                 <button
-                    onClick={() => switchAuth(false)}
-                    className='switch-login bg-sky-700 text-white cursor-pointer transition-all ease-in-out duration-200 hover:scale-105 rounded-md mx-auto w-1/2 h-6 text-sm font-extrabold'>Switch
+                    onClick={switchAuthentication}
+                    className='switch-login bg-sky-700 text-white cursor-pointer transition-all ease-in-out duration-200 hover:scale-105 rounded-md mx-auto w-full xs:w-1/2 h-6 text-sm font-extrabold'>Switch
                     to Register Form
                 </button>
                 <button
                     onClick={switchLoginType}
-                    className="switch-login bg-sky-600 text-white cursor-pointer transition-all ease-in-out duration-200 hover:scale-105 rounded-md mx-auto w-1/2 h-6 text-sm font-extrabold">
+                    className="switch-login bg-sky-600 text-white cursor-pointer transition-all ease-in-out duration-200 hover:scale-105 rounded-md mx-auto w-full xs:w-1/2 h-6 text-sm font-extrabold">
                     {
                         loginType.login ? "switch to OTP Login" : "switch to Email Login"
                     }
@@ -216,7 +285,7 @@ const Login: FC<LoginProps> = ({switchAuth}) => {
 
                 {
                     loginType.login ?
-                        <div className="form-wrapper flex flex-col justify-center items-center gap-8">
+                        <div className="form-wrapper flex flex-col gap-9 pt-4">
                             <Input type="email" placeholder="Enter your email" value={inputEmail}
                                    setValue={setInputEmail} setErrorsCount={setEmailErrorsCount}/>
                             <Input type="password" placeholder="Enter your password" value={inputPassword}
@@ -224,8 +293,8 @@ const Login: FC<LoginProps> = ({switchAuth}) => {
                             <button
                                 disabled={Boolean(emailErrorsCount || passwordErrorsCount)}
                                 onClick={login}
-                                className={`${Boolean(emailErrorsCount || passwordErrorsCount) ? "opacity-60 cursor-not-allowed" : "opacity-100 hover:bg-green-800 cursor-pointer"} bg-green-600 text-white h-9 rounded-md w-[400px]
-                transition-all ease-in-out duration-150 flex items-center justify-center`}>Login
+                                className={`${Boolean(emailErrorsCount || passwordErrorsCount) ? "opacity-60 cursor-not-allowed" : "opacity-100 hover:bg-green-800 cursor-pointer"} bg-green-600 text-white h-9 rounded-md w-full xs:w-[400px]
+                transition-all ease-in-out duration-150 flex mx-auto items-center justify-center`}>Login
                             </button>
                         </div> :
                         <div className="form-wrapper">
@@ -242,7 +311,7 @@ const Login: FC<LoginProps> = ({switchAuth}) => {
                                         <button
                                             disabled={Boolean(phoneErrorsCount)}
                                             onClick={sendCode}
-                                            className={`mt-3 ${phoneErrorsCount ? "cursor-not-allowed opacity-60" : "hover:bg-green-800 opacity-100 cursor-pointer"} mx-auto bg-green-600 text-white h-9 rounded-md w-[400px]
+                                            className={`mt-3 ${phoneErrorsCount ? "cursor-not-allowed opacity-60" : "hover:bg-green-800 opacity-100 cursor-pointer"} mx-auto bg-green-600 text-white h-9 rounded-md w-full xs:w-[400px]
                                     transition-all ease-in-out duration-150 flex items-center justify-center `}>Send
                                             Code
                                         </button>
@@ -264,8 +333,8 @@ const Login: FC<LoginProps> = ({switchAuth}) => {
                                         <button
                                             disabled={Boolean(inputCode.toString().length !== 4)}
                                             onClick={checkCode}
-                                            className={`mt-3 ${Boolean(inputCode.toString().length !== 4) ? "cursor-not-allowed opacity-60" : "hover:bg-green-800 opacity-100 cursor-pointer"} mx-auto bg-green-600 text-white h-9 rounded-md w-[400px]
-                                    transition-all ease-in-out duration-150 flex items-center justify-center `}>Send
+                                            className={`mt-3 ${Boolean(inputCode.toString().length !== 4) ? "cursor-not-allowed opacity-60" : "hover:bg-green-800 opacity-100 cursor-pointer"} mx-auto bg-green-600 text-white h-9 rounded-md w-full xs:w-[400px]
+                                    transition-all ease-in-out duration-150 flex items-center justify-center `}>Check
                                             Code
                                         </button>
                                     </>
