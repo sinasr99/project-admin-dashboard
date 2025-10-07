@@ -73,7 +73,6 @@ const Login: FC<LoginProps> = ({switchAuth}) => {
         Cookies.set(key, `${now}`, {path: "/", expires: expireDate})
     }
 
-
     function getDefaultLoginType(): loginTypeProps {
         const defaultValue: loginTypeProps = {login: true, otp: false}
         const key = "login-type"
@@ -295,7 +294,7 @@ const Login: FC<LoginProps> = ({switchAuth}) => {
                                 disabled={Boolean(emailErrorsCount || passwordErrorsCount)}
                                 onClick={login}
                                 className={`${Boolean(emailErrorsCount || passwordErrorsCount) ? "opacity-60 cursor-not-allowed" : "opacity-100 hover:bg-green-800 cursor-pointer"} bg-green-600 text-white h-9 rounded-md w-full xs:w-[400px]
-                transition-all ease-in-out duration-150 flex items-center justify-center`}>Login
+                transition-all ease-in-out duration-150 flex mx-auto items-center justify-center`}>Login
                             </button>
                         </div> :
                         <div className="form-wrapper">

@@ -1,11 +1,11 @@
 import {FC} from "react";
 
-const Dashboard: FC = () => {
+const Users: FC = () => {
     return (
         <>
-
+            Users
         </>
     )
 }
 
-export default Dashboard
+export default Users
