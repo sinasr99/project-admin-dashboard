@@ -286,9 +286,9 @@ const Login: FC<LoginProps> = ({switchAuth}) => {
                 {
                     loginType.login ?
                         <div className="form-wrapper flex flex-col gap-9 pt-4">
-                            <Input type="email" placeholder="Enter your email" value={inputEmail}
+                            <Input isFullWidth={false} type="email" placeholder="Enter your email" value={inputEmail}
                                    setValue={setInputEmail} setErrorsCount={setEmailErrorsCount}/>
-                            <Input type="password" placeholder="Enter your password" value={inputPassword}
+                            <Input isFullWidth={false} type="password" placeholder="Enter your password" value={inputPassword}
                                    setValue={setInputPassword} setErrorsCount={setPasswordErrorsCount}/>
                             <button
                                 disabled={Boolean(emailErrorsCount || passwordErrorsCount)}
@@ -305,7 +305,7 @@ const Login: FC<LoginProps> = ({switchAuth}) => {
                             {
                                 otpLevels.getPhone ?
                                     <>
-                                        <Input type="phone" placeholder="Enter your phone" value={inputPhone}
+                                        <Input isFullWidth={false} type="phone" placeholder="Enter your phone" value={inputPhone}
                                                setValue={setInputPhone}
                                                setErrorsCount={setPhoneErrorsCount}/>
                                         <button

@@ -6,21 +6,34 @@ import emailValidation from "../validations/emailValidation";
 import passwordValidation from "../validations/passwordValidation";
 import nameValidation from "../validations/textValidation"
 
-type inputType = "text" | "password" | "phone" | "email"
+type inputType = "text" | "password" | "phone" | "email" | "normal"
+
+interface InputNormalProps {
+    type: "normal",
+    placeholder: string,
+    value: string,
+    setValue: (value: string) => void,
+    isFullWidth: boolean
+}
 
 interface InputProps {
     type: inputType,
     placeholder: string,
     value: string,
     setValue: (value: string) => void,
-    setErrorsCount: Dispatch<SetStateAction<number>>
+    setErrorsCount: Dispatch<SetStateAction<number>>,
+    isFullWidth: boolean
 }
 
-const Input: FC<InputProps> = ({type, placeholder, setValue, value, setErrorsCount}) => {
+type inputCombineProps = InputProps | InputNormalProps
+
+const Input: FC<inputCombineProps> = (props) => {
+    const {type, placeholder, setValue, value, isFullWidth} = props
     const inputRef = useRef<HTMLInputElement>(null)
     const spanRef = useRef<HTMLSpanElement>(null)
     const [inputType, setInputType] = useState<inputType>(type)
     const [errors, setErrors] = useState<string[]>([])
+
 
     const focusInput = () => {
         const input = inputRef.current
@@ -63,12 +76,12 @@ const Input: FC<InputProps> = ({type, placeholder, setValue, value, setErrorsCou
                 try {
                     await nameValidation.validate({name: value}, {abortEarly: false})
                     setErrors([])
-                    setErrorsCount(0)
+                    props.setErrorsCount(0)
                 } catch (err) {
                     if (err instanceof ValidationError) {
                         const errors: string[] = err.inner.map(err => err.message)
                         setErrors(errors)
-                        setErrorsCount(errors.length)
+                        props.setErrorsCount(errors.length)
                     }
                 }
                 break
@@ -77,12 +90,12 @@ const Input: FC<InputProps> = ({type, placeholder, setValue, value, setErrorsCou
                 try {
                     await phoneSchema.validate({phone: value}, {abortEarly: false})
                     setErrors([])
-                    setErrorsCount(0)
+                    props.setErrorsCount(0)
                 } catch (err) {
                     if (err instanceof ValidationError) {
                         const errors: string[] = err.inner.map(err => err.message)
                         setErrors(errors)
-                        setErrorsCount(errors.length)
+                        props.setErrorsCount(errors.length)
                     }
                 }
                 break
@@ -91,12 +104,12 @@ const Input: FC<InputProps> = ({type, placeholder, setValue, value, setErrorsCou
                 try {
                     await emailValidation.validate({email: value}, {abortEarly: false})
                     setErrors([])
-                    setErrorsCount(0)
+                    props.setErrorsCount(0)
                 } catch (err) {
                     if (err instanceof ValidationError) {
                         const errors: string[] = err.inner.map(err => err.message)
                         setErrors(errors)
-                        setErrorsCount(errors.length)
+                        props.setErrorsCount(errors.length)
                     }
                 }
                 break
@@ -105,18 +118,18 @@ const Input: FC<InputProps> = ({type, placeholder, setValue, value, setErrorsCou
                 try {
                     await passwordValidation.validate({password: value}, {abortEarly: false})
                     setErrors([])
-                    setErrorsCount(0)
+                    props.setErrorsCount(0)
                 } catch (err) {
                     if (err instanceof ValidationError) {
                         const errors: string[] = err.inner.map(err => err.message)
                         setErrors(errors)
-                        setErrorsCount(errors.length)
+                        props.setErrorsCount(errors.length)
                     }
                 }
                 break
             }
         }
-    },[setErrorsCount, type,value])
+    }, [props, type, value])
 
     useEffect(() => {
         if (value.length) {
@@ -129,11 +142,11 @@ const Input: FC<InputProps> = ({type, placeholder, setValue, value, setErrorsCou
     }, [value, checkInputValid]);
 
     return (
-        <div>
+        <div className={`${isFullWidth ? "w-full" : ""}`}>
             <div onClick={focusInput}
-                 className="input-wrapper dark:text-white border-solid text-sm xs:text-base w-full xs:w-[400px] relative mx-auto">
+                 className={`input-wrapper dark:text-white border-solid text-sm xs:text-base ${isFullWidth ? "w-full" : "w-full xs:w-[400px]"} relative mx-auto`}>
                 <span ref={spanRef} onClick={focusInput}
-                  className="absolute transition-all ease-in-out duration-200 pb-1 top-0 bottom-0 px-3  dark:text-white text-black/50 my-auto leading-8 xs:leading-9">{placeholder}</span>
+                      className="absolute transition-all ease-in-out duration-200 pb-1 top-0 bottom-0 px-3  dark:text-white text-black/50 my-auto leading-8 xs:leading-9">{placeholder}</span>
                 <input value={value} onChange={e => setValue(e.target.value)} onBlur={inputBlur} ref={inputRef}
                        type={(type === "password" || type === "text" || type === "email") ? inputType : "text"}
                        className={`w-full outline-none p-2 pt-2 h-8 xs:h-9 bg-white ${value.length ? "h-12 xs:h-12 pb-[2px] pt-2 xs:pt-4" : ""} focus:h-12 ${type === "password" ? "pr-10" : ""} xs:focus:pt-4 focus:pb-[2px] font-roboto bg-white dark:bg-zinc-700 border-solid border-2 transition-all ease-in-out duration-200 ${errors.length ? "border-red-700" : "border-black/20 dark:border-white dark:focus:border-white focus:border-black/60"}  rounded-md`}/>

@@ -176,18 +176,18 @@ const Register: FC<RegisterProps> = ({switchAuth}) => {
         switch (true) {
             case authType.isShowLevelOne: {
                 return <>
-                    <Input setErrorsCount={setNameErrorsCount} value={inputName} setValue={setInputName} type="text"
+                    <Input isFullWidth={false} setErrorsCount={setNameErrorsCount} value={inputName} setValue={setInputName} type="text"
                            placeholder="Enter your name"/>
-                    <Input setErrorsCount={setEmailErrorsCount} value={inputEmail} setValue={setInputEmail} type="email"
+                    <Input isFullWidth={false} setErrorsCount={setEmailErrorsCount} value={inputEmail} setValue={setInputEmail} type="email"
                            placeholder="Enter your email"/>
-                    <Input setErrorsCount={setPhoneErrorsCount} value={inputPhone} setValue={setInputPhone} type="phone"
+                    <Input isFullWidth={false} setErrorsCount={setPhoneErrorsCount} value={inputPhone} setValue={setInputPhone} type="phone"
                            placeholder="Enter your phone"/>
-                    <Input setErrorsCount={setPasswordErrorsCount} value={inputPassword} setValue={setInputPassword}
+                    <Input isFullWidth={false} setErrorsCount={setPasswordErrorsCount} value={inputPassword} setValue={setInputPassword}
                            type="password"
                            placeholder="Enter your password"/>
                     <button
                         disabled={isInValidRegister()}
-                        onClick={() => register}
+                        onClick={register}
                         className={`${isInValidRegister() ? "opacity-60 cursor-not-allowed" : "opacity-100 cursor-pointer hover:bg-green-800"} bg-green-600 transition-all ease-in-out duration-200  text-white w-full sm:w-[400px] rounded-md h-8 font-bold flex items-center justify-center mx-auto`}>Send
                         data
                     </button>

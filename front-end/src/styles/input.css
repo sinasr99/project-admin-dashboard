@@ -14,9 +14,46 @@
     --color-milky: #e1dfdf;
     --color-shimmer: #f6f6f6;
     --color-dark-shimmer: #514e51;
+
     --breakpoint-xs: 31rem;
+    --breakpoint-from-350: 350px;
     --breakpoint-from-400: 400px;
     --breakpoint-from-500: 500px;
+}
+
+/*
+ --------------------------- CSS Reset ---------------------------
+*/
+input {
+    outline: none;
+}
+
+/*
+ --------------------------- Helper Classes ---------------------------
+*/
+/* اندازه‌ی اسکـرولبار */
+.custom-scroll::-webkit-scrollbar {
+    width: 3px;
+    height: 10px;
+}
+
+.transition {
+    transition: all ease-in-out 150ms;
+}
+
+/* پس‌زمینه‌ی ریل (track) */
+.custom-scroll::-webkit-scrollbar-track {
+    background:  white;
+}
+
+.dark .custom-scroll::-webkit-scrollbar-track {
+    background:  var(--color-zinc-700);
+}
+
+/* خودِ دکمه‌ی اسکرول (thumb) */
+.custom-scroll::-webkit-scrollbar-thumb {
+    background: var(--color-orange-400); /* نارنجی */
+    border-radius: 2rem; /* گرد */
 }
 
 /*
@@ -175,4 +212,8 @@ body {
 
 .text-shadow {
     text-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
+}
+
+.dark .text-shadow {
+    text-shadow: 0 0 1rem rgba(255, 255, 255, 0.5);
 }
