@@ -129,7 +129,7 @@ const AccessPanel: FC = () => {
             </div>
 
             <div
-                className="access-panel-mobile fixed xs:hidden bottom-0 left-0 right-0 bg-white box-shadow flex items-center justify-between py-3 px-1 dark:bg-zinc-700">
+                className="access-panel-mobile z-50 fixed xs:hidden bottom-0 left-0 right-0 bg-white box-shadow flex items-center justify-between py-3 px-1 dark:bg-zinc-700">
                 <Link to="/dashboard">
                     <IoHomeSharp
                         className={`w-8 h-6 ${"/dashboard" === path ? "text-orange-500" : "dark:text-white"}`}/>

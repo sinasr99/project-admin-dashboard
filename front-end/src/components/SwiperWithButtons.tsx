@@ -11,7 +11,7 @@ import {Navigation} from 'swiper/modules';
 import {IoMdArrowDropleft, IoMdArrowDropright} from "react-icons/io";
 
 type SwiperWithButtonsProps = {
-    slides: JSX.Element[]
+    slides: JSX.Element[],
 }
 
 const SwiperWithButtons: FC<SwiperWithButtonsProps> = ({slides}) => {
@@ -30,7 +30,7 @@ const SwiperWithButtons: FC<SwiperWithButtonsProps> = ({slides}) => {
             </button>
 
             <Swiper
-                slidesPerView={3}
+                slidesPerView={slides.length <= 3 ? slides.length : 3}
                 navigation={{
                     prevEl: prevButton.current,
                     nextEl: nextButton.current

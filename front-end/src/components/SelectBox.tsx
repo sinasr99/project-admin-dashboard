@@ -50,7 +50,7 @@ const SelectBox: FC<SelectBoxProps> = ({defaultItem, items, setDefaultItem, plac
                         .filter(item => item !== defaultItem)
                         .map((item, i) => (
                             i === 0
-                                ? <p className="p-2 pt-0 cursor-pointer transition-all ease-in-out duration-150 hover:bg-milky dark:hover:bg-zinc-500" onClick={e => selectDefaultItem(e, item)}
+                                ? <p className="p-2 cursor-pointer transition-all ease-in-out duration-150 hover:bg-milky dark:hover:bg-zinc-500" onClick={e => selectDefaultItem(e, item)}
                                      key={i}>{item}</p>
                                 : <p className="p-2 cursor-pointer transition-all ease-in-out duration-150 hover:bg-milky dark:hover:bg-zinc-500 border-t border-solid border-black/10 dark:border-white"
                                      onClick={e => selectDefaultItem(e, item)} key={i}>{item}</p>

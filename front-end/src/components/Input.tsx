@@ -5,6 +5,7 @@ import {ValidationError} from "yup"
 import emailValidation from "../validations/emailValidation";
 import passwordValidation from "../validations/passwordValidation";
 import nameValidation from "../validations/textValidation"
+import {Category} from "./Product.T";
 
 type inputType = "text" | "password" | "phone" | "email" | "normal"
 
@@ -12,7 +13,7 @@ interface InputNormalProps {
     type: "normal",
     placeholder: string,
     value: string,
-    setValue: (value: string) => void,
+    setValue: Dispatch<SetStateAction<any>>,
     isFullWidth: boolean
 }
 
@@ -21,7 +22,7 @@ interface InputProps {
     placeholder: string,
     value: string,
     setValue: (value: string) => void,
-    setErrorsCount: Dispatch<SetStateAction<number>>,
+    setErrorsCount:Dispatch<SetStateAction<number>>,
     isFullWidth: boolean
 }
 
@@ -165,7 +166,7 @@ const Input: FC<inputCombineProps> = (props) => {
             {
                 errors.length ?
                     <span
-                        className="font-bold w-full xs:w-[400px] mt-1 mx-auto text-sm xs:text-base text-red-600 dark:text-orange-400 line-clamp-2 overflow-hidden text-ellipsis">{errors[0]}</span>
+                        className="font-semibold w-full xs:w-[400px] mt-1 mx-auto text-sm xs:text-base text-red-500 line-clamp-2 overflow-hidden text-ellipsis">{errors[0]}</span>
                     : null
             }
         </div>
