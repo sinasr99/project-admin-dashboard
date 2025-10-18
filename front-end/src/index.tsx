@@ -18,7 +18,8 @@ window.addEventListener("beforeunload", () => {
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLDivElement
-);
+)
+
 root.render(
     <BrowserRouter>
         <ThemeContextProvider>

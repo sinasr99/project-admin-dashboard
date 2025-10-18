@@ -1,10 +1,12 @@
-import React, {Dispatch, FC, SetStateAction, useEffect, useState} from "react";
+import React, {Dispatch, FC, ReactNode, SetStateAction, useEffect, useState} from "react";
 import {FaWindowClose} from "react-icons/fa";
 import Input from "./Input";
 import {UserRole, UserType} from "./User.T";
 import SelectBox from "./SelectBox";
 import {Category, ProductType} from "./Product.T";
 import {categories} from "../pages/Dashboard/dashboard-pages/Products"
+
+type InputTypes = "PRODUCT" | "USER" | "ANSWER-TICKET"
 
 type baseEditType = {
     show: boolean,
@@ -25,11 +27,17 @@ type userEditType = baseEditType & {
     editFunc: (user: UserType) => void
 }
 
-type EditUserModalProps = productEditType | userEditType
+type AnswerType = baseEditType & {
+    editType: "ANSWER-TICKET",
+    item: string,
+    editFunc: (answer: string) => void
+}
+
+type EditUserModalProps = productEditType | userEditType | AnswerType
 
 const userRoles: UserRole[] = ["USER", "ADMIN"]
 
-const EditModal: FC<EditUserModalProps> = (props) => {
+const InputModal: FC<EditUserModalProps> = (props) => {
     // Props :
     const {editType, editFunc, setShow, show, item, noButtonText, yesButtonText} = props
 
@@ -47,6 +55,9 @@ const EditModal: FC<EditUserModalProps> = (props) => {
     const [category, setCategory] = useState<Category>("Computer")
     const [storage, setStorage] = useState<number>(0)
     const [title, setTitle] = useState<string>("")
+
+    // Answer Input :
+    const [inputAnswer, setInputAnswer] = useState("")
 
     // User Input Errors :
     const [userNameErrors, setUserNameErrors] = useState<number>(0)
@@ -79,46 +90,47 @@ const EditModal: FC<EditUserModalProps> = (props) => {
             setCategory(item.category)
             setStorage(item.storage)
             setTitle(item.title)
-        } else {
+        } else if (editType === "USER") {
             setUserName(item.name)
             setUserPhone(item.phone)
             setUserPassword(item.password)
             setUserEmail(item.email)
             setUserRole(item.role)
+        } else if (editType === "ANSWER-TICKET") {
+            setInputAnswer(item)
         }
     }, [item])
 
     const editFunction = () => {
-        if (editType === "USER") {
-            const user: UserType = {
-                name: userName,
-                password: userPassword,
-                role: userRole as UserRole,
-                phone: userPhone,
-                email: userEmail
+        switch (editType) {
+            case "USER": {
+                const user: UserType = {
+                    name: userName,
+                    password: userPassword,
+                    role: userRole as UserRole,
+                    phone: userPhone,
+                    email: userEmail
+                }
+                editFunc(user)
+                break
             }
-            return editFunc(user)
+            case "PRODUCT": {
+                const product: ProductType = {title, price, count, cpu, ram, brand, category, storage}
+                editFunc(product)
+                break
+            }
+            case "ANSWER-TICKET": {
+                editFunc(inputAnswer)
+                break
+            }
         }
-
-        const product: ProductType = {title, price, count, cpu, ram, brand, category, storage}
-        editFunc(product)
     }
 
-    return (
-        <div
-            onClick={e => e.stopPropagation()}
-            className={`modal ${show ? "opacity-100 visible translate-y-0" : "opacity-0 invisible translate-y-10"} dark:text-white transition z-10 fixed top-0 bottom-0 right-0 left-0 w-full h-fit sm:w-[500px] py-3 px-4 m-auto rounded-md box-shadow bg-white dark:bg-zinc-700`}>
-            <div className="edit-modal-header flex items-center justify-end">
-                <FaWindowClose
-                    onClick={() => setShow(false)}
-                    className="w-7 h-7 transition cursor-pointer hover:text-red-600"/>
-            </div>
-            <p className="label text-center text-xl font-bold mt-1 mb-3">Edit user :</p>
-
-            <div className="inputs-wrapper flex flex-col gap-5">
-                {
-                    editType === "USER"
-                        ?
+    const getInputs = (type: InputTypes): ReactNode => {
+        switch (type) {
+            case "USER": {
+                return (
+                    <>
                         <>
                             <Input setErrorsCount={setUserNameErrors} type="text" placeholder="Enter user name"
                                    value={userName}
@@ -135,37 +147,77 @@ const EditModal: FC<EditUserModalProps> = (props) => {
                             <SelectBox items={userRoles} defaultItem={userRole} setDefaultItem={setUserRole}
                                        placeholder="Enter user role"/>
                         </>
-                        :
-                        <>
-                            <Input type="normal" placeholder="Enter product cpu" value={cpu} setValue={setCpu}
-                                   isFullWidth={true}
-                            />
-                            <Input type="normal" placeholder="Enter product ram" value={ram.toString()}
-                                   setValue={setRam}
-                                   isFullWidth={true}
-                            />
-                            <Input type="normal" placeholder="Enter product brand" value={brand} setValue={setBrand}
-                                   isFullWidth={true}
-                            />
-                            <Input type="normal" placeholder="Enter product price" value={price.toString()}
-                                   setValue={setPrice}
-                                   isFullWidth={true}
-                            />
-                            <Input type="normal" placeholder="Enter product count" value={count.toString()}
-                                   setValue={setCount}
-                                   isFullWidth={true}
-                            />
-                            <SelectBox items={categories} defaultItem={category} setDefaultItem={setCategory}
-                                       placeholder="Enter product category"/>
-                            <Input type="normal" placeholder="Enter product title" value={storage.toString()}
-                                   setValue={setStorage}
-                                   isFullWidth={true}
-                            />
-                            <Input type="normal" placeholder="Enter product title" value={title} setValue={setTitle}
-                                   isFullWidth={true}
-                            />
-                        </>
-                }
+                    </>
+                )
+            }
+            case "PRODUCT": {
+                return (
+                    <>
+                        <Input type="normal" placeholder="Enter product cpu" value={cpu} setValue={setCpu}
+                               isFullWidth={true}
+                        />
+                        <Input type="normal" placeholder="Enter product ram" value={ram.toString()}
+                               setValue={setRam}
+                               isFullWidth={true}
+                        />
+                        <Input type="normal" placeholder="Enter product brand" value={brand} setValue={setBrand}
+                               isFullWidth={true}
+                        />
+                        <Input type="normal" placeholder="Enter product price" value={price.toString()}
+                               setValue={setPrice}
+                               isFullWidth={true}
+                        />
+                        <Input type="normal" placeholder="Enter product count" value={count.toString()}
+                               setValue={setCount}
+                               isFullWidth={true}
+                        />
+                        <SelectBox items={categories} defaultItem={category} setDefaultItem={setCategory}
+                                   placeholder="Enter product category"/>
+                        <Input type="normal" placeholder="Enter product title" value={storage.toString()}
+                               setValue={setStorage}
+                               isFullWidth={true}
+                        />
+                        <Input type="normal" placeholder="Enter product title" value={title} setValue={setTitle}
+                               isFullWidth={true}
+                        />
+                    </>
+                )
+            }
+            case "ANSWER-TICKET": {
+                return (
+                    <>
+                        <Input type="normal" placeholder="Enter your answer" value={inputAnswer}
+                               setValue={setInputAnswer} isFullWidth={true}/>
+                    </>
+                )
+            }
+        }
+    }
+
+    const getTitle = (editType: InputTypes): string => {
+        switch (editType) {
+            case "USER":
+                return "Edit user :"
+            case "PRODUCT":
+                return "Edit product :"
+            case "ANSWER-TICKET":
+                return "Answer ticket :"
+        }
+    }
+
+    return (
+        <div
+            onClick={e => e.stopPropagation()}
+            className={`modal ${show ? "opacity-100 visible translate-y-0" : "opacity-0 invisible translate-y-10"} dark:text-white transition z-10 fixed top-0 bottom-0 right-0 left-0 w-full h-fit sm:w-[500px] py-3 px-4 m-auto rounded-md box-shadow bg-white dark:bg-zinc-700`}>
+            <div className="edit-modal-header flex items-center justify-end">
+                <FaWindowClose
+                    onClick={() => setShow(false)}
+                    className="w-7 h-7 transition cursor-pointer hover:text-red-600"/>
+            </div>
+            <p className="label text-center text-xl font-bold mt-1 mb-3">{getTitle(editType)}</p>
+
+            <div className="inputs-wrapper flex flex-col gap-5">
+                {getInputs(editType)}
             </div>
 
             <div className="button flex items-center justify-center gap-2 mt-5">
@@ -181,4 +233,4 @@ const EditModal: FC<EditUserModalProps> = (props) => {
     )
 }
 
-export default EditModal
+export default InputModal
