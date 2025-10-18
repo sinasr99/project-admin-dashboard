@@ -7,11 +7,12 @@ import {FaEdit, FaLongArrowAltRight, FaTrash} from "react-icons/fa";
 import ScrollHorizontal from "../../../components/ScrollHorizontal";
 import {IoTriangle} from "react-icons/io5";
 import SwiperWithButtons from "../../../components/SwiperWithButtons";
-import AgreeModal from "../../../components/AgreeModal";
+import Modal from "../../../components/Modal";
 import {ProductType, Category} from "../../../components/Product.T";
-import EditModal from "../../../components/EditModal";
+import InputModal from "../../../components/InputModal";
 import {computerAndLaptopValidator, phoneAndTabletValidator} from "../../../validations/productValidation"
 import * as yup from "yup"
+import InputFile from "../../../components/InputFile";
 
 export const categories: Category[] = ["Laptop", "Computer", "Mobile", "Tablet", "Monitor"]
 
@@ -235,6 +236,7 @@ const Products: FC = () => {
     const [productRam, setProductRam] = useState("")
     const [productStorage, setProductStorage] = useState("")
     const [productCPU, setProductCPU] = useState("")
+    const [image, setImage] = useState<File | null>(null)
 
     // States Modal :
     const [isShowEditModal, setIsShowEditModal] = useState(false)
@@ -340,6 +342,7 @@ const Products: FC = () => {
 
 
     }
+
     const editHandler = async (newProduct: ProductType) => {
         try {
             console.log("new product => ", newProduct)
@@ -371,12 +374,12 @@ const Products: FC = () => {
 
     return (
         <>
-            <AgreeModal show={isShowRemoveModal} setShow={setIsShowRemoveModal} agreeFunction={removeHandler}
-                        question="Are you sure you want to remove this product ?" yesText="Yes, Remove"
-                        noText="No"/>
-            <EditModal show={isShowEditModal} setShow={setIsShowEditModal} editFunc={editHandler}
-                       yesButtonText="Yes, Edit"
-                       noButtonText="No" editType="PRODUCT" item={currentProduct}/>
+            <Modal type="agree" show={isShowRemoveModal} setShow={setIsShowRemoveModal} agreeFunction={removeHandler}
+                   question="Are you sure you want to remove this product ?" yesText="Yes, Remove"
+                   noText="No"/>
+            <InputModal show={isShowEditModal} setShow={setIsShowEditModal} editFunc={editHandler}
+                        yesButtonText="Yes, Edit"
+                        noButtonText="No" editType="PRODUCT" item={currentProduct}/>
 
             <div className="container pt-5 pb-[60px]">
                 <SearchBar inputSearch={inputSearch} setInputSearch={setInputSearch} search={search} query={query}
@@ -435,6 +438,9 @@ const Products: FC = () => {
                                        isFullWidth={true}/>
                                 <span
                                     className="error text-red-500 dark:text-red-400 font-semibold whitespace-nowrap text-ellipsis overflow-hidden max-w-[610px] md:max-w-[400px]">Name error</span>
+                            </div>
+                            <div className="w-full flex flex-col gap-1 h-full">
+                                <InputFile fileType="image" file={image} setFile={setImage} removePlaceholder="remove image" enterPlaceholder="Enter image"/>
                             </div>
                             {
                                 (productCategory === "Laptop" || productCategory === "Computer")

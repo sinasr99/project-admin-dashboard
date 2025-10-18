@@ -5,8 +5,8 @@ import Input from "../../../components/Input";
 import SelectBox from "../../../components/SelectBox";
 import {ImBlocked} from "react-icons/im";
 import SwiperWithButtons from "../../../components/SwiperWithButtons";
-import AgreeModal from "../../../components/AgreeModal";
-import EditModal from "../../../components/EditModal";
+import Modal from "../../../components/Modal";
+import InputModal from "../../../components/InputModal";
 import {UserType, UserRole} from "../../../components/User.T"
 import SearchBar from "../../../components/SearchBar";
 
@@ -372,13 +372,13 @@ const Users: FC = () => {
 
     return (
         <>
-            <AgreeModal yesText="Block User" noText="No" question="Are you sure you want to block this user ?"
-                        show={isShowBlock} agreeFunction={block} setShow={setIsShowBlock}/>
-            <AgreeModal yesText="Remove User" noText="No" question="Are you sure you want to remove this user ?"
-                        show={isShowRemove} agreeFunction={remove} setShow={setIsShowRemove}/>
-            <EditModal editType="USER" noButtonText="No" yesButtonText="Yes, Edit" item={currentUser}
-                       show={isShowEditModal}
-                       setShow={setIsShowEditModal} editFunc={edit}/>
+            <Modal type="agree" yesText="Block User" noText="No" question="Are you sure you want to block this user ?"
+                   show={isShowBlock} agreeFunction={block} setShow={setIsShowBlock}/>
+            <Modal type="agree" yesText="Remove User" noText="No" question="Are you sure you want to remove this user ?"
+                   show={isShowRemove} agreeFunction={remove} setShow={setIsShowRemove}/>
+            <InputModal editType="USER" noButtonText="No" yesButtonText="Yes, Edit" item={currentUser}
+                        show={isShowEditModal}
+                        setShow={setIsShowEditModal} editFunc={edit}/>
             <div className="container pt-5 pb-[60px]">
                 <SearchBar notifications={notifications} inputSearch={inputSearch} setInputSearch={setInputSearch}
                            search={search} query={query} setQuery={setQuery}/>
