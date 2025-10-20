@@ -4,7 +4,7 @@ import {Outlet, useLocation} from "react-router-dom"
 import Cookies from "js-cookie"
 import ChartWrapper, {chartDataType} from "../../components/ChartWrapper"
 import getLastWeeks from "../../helperFunctions/getLastWeek"
-import {IoLogOut, IoTriangle} from "react-icons/io5";
+import {IoLogOut} from "react-icons/io5";
 
 const Dashboard: FC = () => {
     const isDashboardPath = useLocation().pathname === "/dashboard"
@@ -309,8 +309,8 @@ const Dashboard: FC = () => {
                                                         <div
                                                             key={i}
                                                             className="ticket box-shadow p-3 rounded-md sm:rounded-full gap-y-4 gap-x-2.5 grid grid-cols-[90px_200px] from-400:grid-cols-[90px_230px] from-500:grid-cols-[90px_350px] sm:grid-cols-[25px_100px_100px_320px] md:grid-cols-[25px_100px_100px_500px] lg:grid-cols-[25px_100px_100px_690px] items-center">
-                                            <span
-                                                className="shimmer-key block sm:hidden bg-shimmer dark:bg-dark-shimmer shimmer-animation relative overflow-hidden w-[50px] h-5"></span>
+                                                            <span
+                                                            className="shimmer-key block sm:hidden bg-shimmer dark:bg-dark-shimmer shimmer-animation relative overflow-hidden w-[50px] h-5"></span>
                                                             <span
                                                                 className="w-6 block h-6 rounded-full overflow-hidden relative shimmer-animation bg-shimmer dark:bg-dark-shimmer"></span>
                                                             <span

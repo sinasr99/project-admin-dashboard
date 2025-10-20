@@ -1,13 +1,13 @@
-import React, {Dispatch, FC, SetStateAction, useEffect, useState} from "react";
+import React, { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
 import SearchBar from "../../../components/SearchBar";
-import {useSearchParams} from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import SelectBox from "../../../components/SelectBox";
-import {FaArrowDown} from "react-icons/fa";
+import { FaArrowDown } from "react-icons/fa";
 import Modal from "../../../components/Modal";
 import InputModal from "../../../components/InputModal";
 import SwiperWithButtons from "../../../components/SwiperWithButtons";
 import Ticket from "../../../components/Ticket";
-import {TicketType} from "../../../components/Ticket.T";
+import { TicketType } from "../../../components/Ticket.T";
 
 type FilterType =
     "Default"
@@ -180,7 +180,146 @@ const Tickets: FC = () => {
             ticketStatus: "OPEN",
             creatorName: "Alex Morgan"
         },
-    ]
+        {
+            title: "How to sale",
+            body: "I wanted to buy laptop asus tuf gaming z509 but I couldn't",
+            department: "Sales",
+            ticketStatus: "OPEN",
+            creatorName: "Alex Morgan"
+        },
+        {
+            title: "How to sale",
+            body: "I wanted to buy laptop asus tuf gaming z509 but I couldn't",
+            department: "Sales",
+            ticketStatus: "OPEN",
+            creatorName: "Alex Morgan"
+        },
+        {
+            title: "How to sale",
+            body: "I wanted to buy laptop asus tuf gaming z509 but I couldn't",
+            department: "Sales",
+            ticketStatus: "OPEN",
+            creatorName: "Alex Morgan"
+        },
+        {
+            title: "How to sale",
+            body: "I wanted to buy laptop asus tuf gaming z509 but I couldn't",
+            department: "Sales",
+            ticketStatus: "OPEN",
+            creatorName: "Alex Morgan"
+        },
+        {
+            title: "How to sale",
+            body: "I wanted to buy laptop asus tuf gaming z509 but I couldn't",
+            department: "Sales",
+            ticketStatus: "OPEN",
+            creatorName: "Alex Morgan"
+        },
+        {
+            title: "How to sale",
+            body: "I wanted to buy laptop asus tuf gaming z509 but I couldn't",
+            department: "Sales",
+            ticketStatus: "OPEN",
+            creatorName: "Alex Morgan"
+        },
+        {
+            title: "How to sale",
+            body: "I wanted to buy laptop asus tuf gaming z509 but I couldn't",
+            department: "Sales",
+            ticketStatus: "OPEN",
+            creatorName: "Alex Morgan"
+        },
+        {
+            title: "How to sale",
+            body: "I wanted to buy laptop asus tuf gaming z509 but I couldn't",
+            department: "Sales",
+            ticketStatus: "OPEN",
+            creatorName: "Alex Morgan"
+        },
+        {
+            title: "How to sale",
+            body: "I wanted to buy laptop asus tuf gaming z509 but I couldn't",
+            department: "Sales",
+            ticketStatus: "OPEN",
+            creatorName: "Alex Morgan"
+        },
+        {
+            title: "How to sale",
+            body: "I wanted to buy laptop asus tuf gaming z509 but I couldn't",
+            department: "Sales",
+            ticketStatus: "OPEN",
+            creatorName: "Alex Morgan"
+        },
+        {
+            title: "How to sale",
+            body: "I wanted to buy laptop asus tuf gaming z509 but I couldn't",
+            department: "Sales",
+            ticketStatus: "OPEN",
+            creatorName: "Alex Morgan"
+        },
+        {
+            title: "How to sale",
+            body: "I wanted to buy laptop asus tuf gaming z509 but I couldn't",
+            department: "Sales",
+            ticketStatus: "OPEN",
+            creatorName: "Alex Morgan"
+        },
+        {
+            title: "How to sale",
+            body: "I wanted to buy laptop asus tuf gaming z509 but I couldn't",
+            department: "Sales",
+            ticketStatus: "OPEN",
+            creatorName: "Alex Morgan"
+        },
+        {
+            title: "How to sale",
+            body: "I wanted to buy laptop asus tuf gaming z509 but I couldn't",
+            department: "Sales",
+            ticketStatus: "OPEN",
+            creatorName: "Alex Morgan"
+        },
+        {
+            title: "How to sale",
+            body: "I wanted to buy laptop asus tuf gaming z509 but I couldn't",
+            department: "Sales",
+            ticketStatus: "OPEN",
+            creatorName: "Alex Morgan"
+        },
+        {
+            title: "How to sale",
+            body: "I wanted to buy laptop asus tuf gaming z509 but I couldn't",
+            department: "Sales",
+            ticketStatus: "OPEN",
+            creatorName: "Alex Morgan"
+        },
+        {
+            title: "How to sale",
+            body: "I wanted to buy laptop asus tuf gaming z509 but I couldn't",
+            department: "Sales",
+            ticketStatus: "OPEN",
+            creatorName: "Alex Morgan"
+        },
+        {
+            title: "How to sale",
+            body: "I wanted to buy laptop asus tuf gaming z509 but I couldn't",
+            department: "Sales",
+            ticketStatus: "OPEN",
+            creatorName: "Alex Morgan"
+        },
+        {
+            title: "How to sale",
+            body: "I wanted to buy laptop asus tuf gaming z509 but I couldn't",
+            department: "Sales",
+            ticketStatus: "OPEN",
+            creatorName: "Alex Morgan"
+        },
+        {
+            title: "How to sale",
+            body: "I wanted to buy laptop asus tuf gaming z509 but I couldn't",
+            department: "Sales",
+            ticketStatus: "OPEN",
+            creatorName: "Alex Morgan"
+        },]
     const [tickets10, setTickets10] = useState<TicketType[]>(getDefaultQuery("tickets") as TicketType[])
 
     // pagination :
@@ -201,6 +340,9 @@ const Tickets: FC = () => {
     // Agree Modal For Detail Ticket
     const [isShowDetailModal, setIsShowDetailModal] = useState(false)
     const [currentTicket, setCurrentTicket] = useState<TicketType | null>(null)
+
+    // Show Tickets State :
+    const [isShowTickets, setIsShowTickets] = useState(false)
 
     // Ticket Operations
 
@@ -258,11 +400,17 @@ const Tickets: FC = () => {
 
                 if (!page || isNaN(+page)) {
                     query.set("page", "1")
+                    setTimeout(() => {
+                        setIsShowTickets(true)
+                    }, 500)
                     return tickets.slice(from, to)
                 }
 
                 from = (pageNumber - 1) * 10
                 to = from + 10
+                setTimeout(() => {
+                    setIsShowTickets(true)
+                }, 500)
                 return tickets.slice(from, to)
             }
             case "page": {
@@ -279,6 +427,8 @@ const Tickets: FC = () => {
     }
 
     const changePageAndItems = (newPage: number) => {
+        setIsShowTickets(false)
+
         // Page Change :
         query.set("page", newPage.toString())
         setQuery(query)
@@ -288,7 +438,20 @@ const Tickets: FC = () => {
         const to = from + 10
 
         // Items Change :
-        setTickets10(tickets.slice(from, to))
+        setTimeout(() => {
+            setIsShowTickets(true)
+            setTickets10(tickets.slice(from, to))
+        }, 500)
+    }
+
+    const getInitialNumber = (): number => {
+        const number = query.get("page")
+
+        if (!number || isNaN(+number)) {
+            return 0
+        }
+
+        return +number - 1
     }
 
     useEffect(() => {
@@ -298,27 +461,27 @@ const Tickets: FC = () => {
     return (
         <>
             <Modal type="agree" show={isShowAgreeRemove} setShow={setIsShowAgreeRemove} agreeFunction={removeTicket}
-                   question="Are you sure you want to remove this ticket"
-                   yesText="Yes, remove"
-                   noText="No"/>
+                question="Are you sure you want to remove this ticket"
+                yesText="Yes, remove"
+                noText="No" />
 
             <Modal type="agree" show={isShowAgreeClose} setShow={setIsShowAgreeClose} agreeFunction={closeTicket}
-                   question="Are you sure you want to close this ticket"
-                   yesText="Yes, close"
-                   noText="No"/>
+                question="Are you sure you want to close this ticket"
+                yesText="Yes, close"
+                noText="No" />
 
             <Modal doYouHaveChildren={false} type="detail" show={isShowMessageTicketModal}
-                   setShow={setIsShowMessageTicketModal}
-                   text={ticketMessage}>
+                setShow={setIsShowMessageTicketModal}
+                text={ticketMessage}>
                 <p className="question font-bold text-lg dark:text-white text-center my-3">{ticketMessage}</p>
             </Modal>
 
             <InputModal show={isShowAnswerModal} setShow={setIsShowAnswerModal} yesButtonText="Answer"
-                        noButtonText={"No"}
-                        editType="ANSWER-TICKET" item="" editFunc={answerTicket}/>
+                noButtonText={"No"}
+                editType="ANSWER-TICKET" item="" editFunc={answerTicket} />
 
             <Modal text="" doYouHaveChildren={true} type="detail" show={isShowDetailModal}
-                   setShow={setIsShowDetailModal}>
+                setShow={setIsShowDetailModal}>
                 {
                     currentTicket
                         ?
@@ -336,25 +499,25 @@ const Tickets: FC = () => {
             <div className="dark:text-white bg-white dark:bg-zinc-700 py-7">
                 <h3 className="font-bold text-2xl px-3">Tickets Management</h3>
                 <SearchBar inputSearch={inputSearch} setInputSearch={setInputSearch} search={searchHandler}
-                           query={query}
-                           setQuery={setQuery} notifications={notifications}/>
+                    query={query}
+                    setQuery={setQuery} notifications={notifications} />
 
                 <div className="tickets-management flex flex-col sm:flex-row items-center justify-center gap-5">
                     <div className="ticket-management-item flex flex-col lg:flex-row items-center gap-4">
                         <div className="flex flex-col lg:flex-row items-center gap-1">
                             <span>Filter tickets</span>
-                            <FaArrowDown className="w-5 h-5 lg:-rotate-90"/>
+                            <FaArrowDown className="w-5 h-5 lg:-rotate-90" />
                         </div>
                         <SelectBox items={filterItems} defaultItem={filter} setDefaultItem={setFilter}
-                                   placeholder="Filter tickets"/>
+                            placeholder="Filter tickets" />
                     </div>
                     <div className="ticket-management-item flex flex-col lg:flex-row items-center gap-4">
                         <div className="flex flex-col lg:flex-row items-center gap-1">
                             <span>Sort tickets</span>
-                            <FaArrowDown className="w-5 h-5 lg:-rotate-90"/>
+                            <FaArrowDown className="w-5 h-5 lg:-rotate-90" />
                         </div>
                         <SelectBox items={sortItems} defaultItem={sort} setDefaultItem={setSort}
-                                   placeholder="Sort tickets"/>
+                            placeholder="Sort tickets" />
                     </div>
                 </div>
 
@@ -363,37 +526,79 @@ const Tickets: FC = () => {
                         <div className="ticket-header">
 
                         </div>
+
                         {
-                            tickets10.map((ticket, index) => (
-                                <Ticket
-                                    openNumber={number}
-                                    setOpenNumber={setNumber}
-                                    ticket={ticket}
-                                    number={index + 1}
-                                    setCurrentItem={setCurrentTicket}
-                                    setShowDetailModal={setIsShowDetailModal}
-                                    setShowAnswer={setIsShowAnswerModal}
-                                    setShowAgreeRemove={setIsShowAgreeRemove}
-                                    openModal={openModal}
-                                    setCurrentTicketMessage={setTicketMessage}
-                                    setShowClose={setIsShowAgreeClose}
-                                    setShowTicketMessageModal={setIsShowMessageTicketModal}
-                                    key={index}
-                                />
-                            ))
+                            isShowTickets
+                                ? tickets10.map((ticket, index) => (
+                                    <Ticket
+                                        openNumber={number}
+                                        setOpenNumber={setNumber}
+                                        ticket={ticket}
+                                        number={index + 1}
+                                        setCurrentItem={setCurrentTicket}
+                                        setShowDetailModal={setIsShowDetailModal}
+                                        setShowAnswer={setIsShowAnswerModal}
+                                        setShowAgreeRemove={setIsShowAgreeRemove}
+                                        openModal={openModal}
+                                        setCurrentTicketMessage={setTicketMessage}
+                                        setShowClose={setIsShowAgreeClose}
+                                        setShowTicketMessageModal={setIsShowMessageTicketModal}
+                                        key={index}
+                                    />
+                                ))
+                                :
+                                Array.from({ length: 5 })
+                                    .map(((ticketShimmer, index) => (
+                                        <div
+                                            key={index}
+                                            className="ticket-shimmer relative grid max-w-[638px] mx-auto sm:text-center items-center h-[70px] sm:px-2 rounded-md border-solid border-black/50 dark:border-white/50 border-[1px]
+                                            grid-cols-[60px_110px_110px]
+                                            sm:grid-cols-[60px_150px_120px_60px_80px_120px]
+                                            ">
+                                            <span
+                                                className="number-shimmer mx-auto sm:m-0 w-[50px] h-[50px] bg-shimmer dark:bg-dark-shimmer shimmer-animation rounded-md"></span>
+                                            <span
+                                                className="number-shimmer pl-[1.5px] flex items-center border-l-[1px] border-l-solid dark:border-l-white/50 h-full border-l-black/50 ">
+                                                <span
+                                                    className="w-[100px] block h-3 bg-shimmer dark:bg-dark-shimmer shimmer-animation"></span>
+                                            </span>
+                                            <span
+                                                className="number-shimmer pl-[1.5px] flex items-center border-l-[1px] border-l-solid dark:border-l-white/50 h-full border-l-black/50 ">
+                                                <span
+                                                    className="w-[90px] block h-3 bg-shimmer dark:bg-dark-shimmer shimmer-animation"></span>
+                                            </span>
+                                            <span
+                                                className="number-shimmer hidden sm:flex pl-[1.5px] items-center border-l-[1px] border-l-solid dark:border-l-white/50 h-full border-l-black/50 ">
+                                                <span
+                                                    className="w-[50px] block h-3 bg-shimmer dark:bg-dark-shimmer shimmer-animation"></span>
+                                            </span>
+                                            <span
+                                                className="number-shimmer hidden sm:flex pl-[1.5px] items-center border-l-[1px] border-l-solid dark:border-l-white/50 h-full border-l-black/50 ">
+                                                <span
+                                                    className="w-[70px] block h-3 bg-shimmer dark:bg-dark-shimmer shimmer-animation"></span>
+                                            </span>
+                                            <span
+                                                className="number-shimmer hidden sm:flex pl-[1.5px] items-center border-l-[1px] border-l-solid dark:border-l-white/50 h-full border-l-black/50 ">
+                                                <span
+                                                    className="w-[100px] block h-3 bg-shimmer dark:bg-dark-shimmer shimmer-animation"></span>
+                                            </span>
+                                        </div>
+                                    )))
                         }
                     </div>
 
-                    <div className="buttons max-w-[300px] mx-auto mt-5">
-                        <SwiperWithButtons slides={
-                            Array.from({length: pageNumbers})
-                                .map((item, index) => (
-                                    <button
-                                        onClick={() => changePageAndItems(index + 1)}
-                                        key={index}
-                                        className={`w-9 h-9 ${query.get("page") === (index + 1).toString() ? "bg-orange-700" : ""} shrink-0 text-sm font-bold bg-orange-500 text-white flex items-center justify-center hover:bg-orange-700 transition-all ease-in-out duration-150 cursor-pointer rounded-full`}>{index + 1}</button>
-                                ))
-                        }/>
+                    <div className="buttons w-[200px] sm:max-w-[300px] mx-auto mt-5">
+                        <SwiperWithButtons
+                            initialSlide={getInitialNumber()}
+                            slides={
+                                Array.from({ length: pageNumbers })
+                                    .map((item, index) => (
+                                        <button
+                                            onClick={() => changePageAndItems(index + 1)}
+                                            key={index}
+                                            className={`w-9 h-9 ${query.get("page") === (index + 1).toString() ? "bg-orange-700" : ""} shrink-0 text-sm font-bold bg-orange-500 text-white flex items-center justify-center hover:bg-orange-700 transition-all ease-in-out duration-150 cursor-pointer rounded-full`}>{index + 1}</button>
+                                    ))
+                            } />
                     </div>
                 </div>
             </div>

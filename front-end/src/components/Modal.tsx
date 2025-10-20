@@ -66,7 +66,7 @@ const Modal: FC<ModalProps> = (props) => {
         return (
             <div
                 onClick={e => e.stopPropagation()}
-                className={`modal ${show ? "opacity-100 visible translate-y-0" : "opacity-0 invisible translate-y-10"} transition z-10 fixed top-0 bottom-0 right-0 left-0 w-full h-fit sm:w-[500px] py-3 px-4 m-auto rounded-md box-shadow bg-milky dark:bg-gray-700`}>
+                className={`modal ${show ? "opacity-100 visible translate-y-0" : "opacity-0 invisible translate-y-10"} z-40 transition z-10 fixed top-0 bottom-0 right-0 left-0 w-full h-fit sm:w-[500px] py-3 px-4 m-auto rounded-md box-shadow bg-milky dark:bg-gray-700`}>
                 <div className="header-modal flex items-center justify-end">
                     <FaWindowClose
                         onClick={() => setShow(false)}

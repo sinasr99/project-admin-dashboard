@@ -51,7 +51,7 @@ const SearchBar: FC<SearchBarProps> = ({search, setQuery, query, setInputSearch,
                     <BiSearchAlt2 className="w-6 h-6"/>
                 </button>
             </div>
-            <div className='notif-wrapper z-40 relative w-8 h-8'>
+            <div className='notif-wrapper z-10 relative w-8 h-8'>
                 <IoMdNotifications
                     onClick={switchShowNotifModal}
                     className='cursor-pointer hover:scale-105 transition-all ease-in-out duration-150 w-8 h-8 dark:text-white'/>

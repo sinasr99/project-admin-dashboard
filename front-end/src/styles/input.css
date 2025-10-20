@@ -47,17 +47,19 @@ input {
 
 /* پس‌زمینه‌ی ریل (track) */
 .custom-scroll::-webkit-scrollbar-track {
-    background:  white;
+    background: white;
 }
 
 .dark .custom-scroll::-webkit-scrollbar-track {
-    background:  var(--color-zinc-700);
+    background: var(--color-zinc-700);
 }
 
 /* خودِ دکمه‌ی اسکرول (thumb) */
 .custom-scroll::-webkit-scrollbar-thumb {
-    background: var(--color-orange-400); /* نارنجی */
-    border-radius: 2rem; /* گرد */
+    background: var(--color-orange-400);
+    /* نارنجی */
+    border-radius: 2rem;
+    /* گرد */
 }
 
 /* *-*-*-*-*-*-*-*-*-*-*- Custom Scroll Horizontal -*-*-*-*-*-*-*-*-*-*-*- */
@@ -65,12 +67,15 @@ input {
     width: 10px;
     height: 7px;
 }
+
 .custom-scroll-horizontal::-webkit-scrollbar-track {
     background: white;
 }
+
 .dark .custom-scroll-horizontal::-webkit-scrollbar-track {
     background: var(--color-zinc-700);
 }
+
 .custom-scroll-horizontal::-webkit-scrollbar-thumb {
     background: var(--color-orange-400);
     border-radius: 2rem;
@@ -78,25 +83,27 @@ input {
 
 /*
  --------------------------- Helper Classes ---------------------------
-*/.shimmer-animation {
-      position: relative;
-      overflow: hidden;
-      background-color: #e0e0e0; /* رنگ پایه اسکلتون */
-  }
+*/
+.shimmer-animation {
+    position: relative;
+    overflow: hidden;
+    background-color: #e0e0e0;
+    /* رنگ پایه اسکلتون */
+}
 
 .shimmer-animation::after {
     content: "";
     position: absolute;
     top: 0;
-    left: -50%; /* شروع از خارج چپ */
-    width: 50%; /* پهنای نوار */
+    left: -50%;
+    /* شروع از خارج چپ */
+    width: 50%;
+    /* پهنای نوار */
     height: 100%;
-    background: linear-gradient(
-            to right,
+    background: linear-gradient(to right,
             transparent 0%,
             white 50%,
-            transparent 100%
-    );
+            transparent 100%);
     animation: shimmer 1.5s infinite linear;
 }
 
@@ -104,6 +111,7 @@ input {
     0% {
         transform: translateX(0);
     }
+
     100% {
         transform: translateX(200%);
     }
@@ -115,12 +123,10 @@ input {
 }
 
 .dark .shimmer-animation::after {
-    background: linear-gradient(
-            to right,
+    background: linear-gradient(to right,
             transparent 0%,
             rgba(255, 255, 255, 0.2) 50%,
-            transparent 100%
-    );
+            transparent 100%);
 }
 
 
@@ -176,15 +182,21 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 input:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 1000px white inset !important; /* رنگ پس‌زمینه رو سفید کن */
-    -webkit-text-fill-color: black !important; /* رنگ متن */
-    caret-color: black; /* رنگ کرسر */
+    -webkit-box-shadow: 0 0 0 1000px white inset !important;
+    /* رنگ پس‌زمینه رو سفید کن */
+    -webkit-text-fill-color: black !important;
+    /* رنگ متن */
+    caret-color: black;
+    /* رنگ کرسر */
 }
 
 .dark input:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 1000px var(--color-zinc-700) inset !important; /* رنگ پس‌زمینه رو سفید کن */
-    -webkit-text-fill-color: white !important; /* رنگ متن */
-    caret-color: white; /* رنگ کرسر */
+    -webkit-box-shadow: 0 0 0 1000px var(--color-zinc-700) inset !important;
+    /* رنگ پس‌زمینه رو سفید کن */
+    -webkit-text-fill-color: white !important;
+    /* رنگ متن */
+    caret-color: white;
+    /* رنگ کرسر */
 }
 
 input:-webkit-autofill:focus {
@@ -247,7 +259,39 @@ body {
         background: blueviolet !important;
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
+}
+
+/* *-*-*-*-*-*-*-*-*-*-*- MUI Classes : -*-*-*-*-*-*-*-*-*-*-*- */
+.dark .MuiInputBase-root {
+    color: white;
+    border: 1px solid white;
+}
+
+.dark .MuiSvgIcon-root {
+    color: white;
+}
+
+.dark .MuiFormLabel-root {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.dark .MuiPickersPopper-paper {
+    background: var(--color-zinc-700);
+    color: white;
+}
+
+.dark .css-1u23akw-MuiButtonBase-root-MuiPickersDay-root {
+    color: white;
+}
+
+.dark .css-rhmlg1-MuiTypography-root-MuiDayCalendar-weekDayLabel {
+    color: white;
+}
+
+.css-1jy569b-MuiFormLabel-root-MuiInputLabel-root {
+    display: none !important;
 }

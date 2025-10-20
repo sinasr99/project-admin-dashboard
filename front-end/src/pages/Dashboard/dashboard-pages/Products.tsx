@@ -581,7 +581,9 @@ const Products: FC = () => {
                                 }
                             </div>
                             <div className="pagination mt-3 flex justify-center items-center max-w-[500px] mx-auto">
-                                <SwiperWithButtons slides={
+                                <SwiperWithButtons
+                                    initialSlide={0}
+                                    slides={
                                     Array.from({length: pages})
                                         .map((button, index) => (
                                             <button

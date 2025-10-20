@@ -1,4 +1,4 @@
-import React, {FC, JSX, useRef} from 'react';
+import React, {FC, JSX, useEffect, useRef} from 'react';
 // Import Swiper React components
 import {Swiper, SwiperSlide} from 'swiper/react';
 
@@ -12,9 +12,10 @@ import {IoMdArrowDropleft, IoMdArrowDropright} from "react-icons/io";
 
 type SwiperWithButtonsProps = {
     slides: JSX.Element[],
+    initialSlide: number
 }
 
-const SwiperWithButtons: FC<SwiperWithButtonsProps> = ({slides}) => {
+const SwiperWithButtons: FC<SwiperWithButtonsProps> = ({slides, initialSlide}) => {
     const prevButton = useRef(null)
     const nextButton = useRef(null)
 
@@ -31,6 +32,7 @@ const SwiperWithButtons: FC<SwiperWithButtonsProps> = ({slides}) => {
 
             <Swiper
                 slidesPerView={slides.length <= 3 ? slides.length : 3}
+                initialSlide={initialSlide}
                 navigation={{
                     prevEl: prevButton.current,
                     nextEl: nextButton.current

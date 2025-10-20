@@ -520,7 +520,9 @@ const Users: FC = () => {
 
                                         <div
                                             className="users-pagination w-[240px] sm:w-full max-w-[300px] mx-auto">
-                                            <SwiperWithButtons slides={
+                                            <SwiperWithButtons
+                                                initialSlide={0}
+                                                slides={
                                                 Array.from({length: Math.ceil(users.length / userPreview)})
                                                     .map((user, index) => (
                                                         <button
