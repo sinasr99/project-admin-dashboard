@@ -4,15 +4,27 @@ import Input from "./Input";
 import {UserRole, UserType} from "./User.T";
 import SelectBox from "./SelectBox";
 import {Category, ProductType} from "./Product.T";
+import {DiscountCodeProps} from "./Discount.T"
 import {categories} from "../pages/Dashboard/dashboard-pages/Products"
+import {discountTypeItems, DiscountType} from "../pages/Dashboard/dashboard-pages/DiscountCodes"
+import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
+import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
+import {DatePicker} from "@mui/x-date-pickers/DatePicker";
 
-type InputTypes = "PRODUCT" | "USER" | "ANSWER-TICKET"
+type InputTypes = "PRODUCT" | "USER" | "ANSWER-TICKET" | "DISCOUNT"
 
 type baseEditType = {
     show: boolean,
     setShow: Dispatch<SetStateAction<boolean>>,
     yesButtonText: string,
-    noButtonText: string
+    noButtonText: string,
+    editType: InputTypes,
+}
+
+type discountEditType = baseEditType & {
+    editType: "DISCOUNT",
+    item: DiscountCodeProps,
+    editFunc: (discount: DiscountCodeProps) => void
 }
 
 type productEditType = baseEditType & {
@@ -33,7 +45,7 @@ type AnswerType = baseEditType & {
     editFunc: (answer: string) => void
 }
 
-type EditUserModalProps = productEditType | userEditType | AnswerType
+type EditUserModalProps = productEditType | userEditType | AnswerType | discountEditType
 
 const userRoles: UserRole[] = ["USER", "ADMIN"]
 
@@ -65,6 +77,15 @@ const InputModal: FC<EditUserModalProps> = (props) => {
     const [userPhoneErrors, setUserPhoneErrors] = useState<number>(0)
     const [userPasswordErrors, setUserPasswordErrors] = useState<number>(0)
 
+    // Discount Inputs :
+    const discountCategories: (Category | "All")[] = ["All", "Laptop", "Tablet", "Computer", "Mobile", "Monitor"]
+
+    const [discountTitle, setDiscountTitle] = useState<string>("")
+    const [discountExpireType, setDiscountExpireType] = useState<DiscountType>("Expiration by Usage Count")
+    const [discountCategory, setDiscountCategory] = useState<Category | "All">("All")
+    const [discountExpireDate, setDiscountExpireDate] = useState<number>(0)
+    const [discountExpireCount, setDiscountExpireCount] = useState<number>(0)
+
     const [isDisabled, setIsDisabled] = useState<boolean>(false)
 
     useEffect(() => {
@@ -81,23 +102,43 @@ const InputModal: FC<EditUserModalProps> = (props) => {
     }, [])
 
     useEffect(() => {
-        if (editType === "PRODUCT") {
-            setCpu(item.cpu || "")
-            setRam(item.ram)
-            setBrand(item.brand)
-            setPrice(item.price)
-            setCount(item.count)
-            setCategory(item.category)
-            setStorage(item.storage)
-            setTitle(item.title)
-        } else if (editType === "USER") {
-            setUserName(item.name)
-            setUserPhone(item.phone)
-            setUserPassword(item.password)
-            setUserEmail(item.email)
-            setUserRole(item.role)
-        } else if (editType === "ANSWER-TICKET") {
-            setInputAnswer(item)
+        switch (editType) {
+            case "USER": {
+                setUserName(item.name)
+                setUserPhone(item.phone)
+                setUserPassword(item.password)
+                setUserEmail(item.email)
+                setUserRole(item.role)
+                break
+            }
+            case "PRODUCT": {
+                setCpu(item.cpu || "")
+                setRam(item.ram)
+                setBrand(item.brand)
+                setPrice(item.price)
+                setCount(item.count)
+                setCategory(item.category)
+                setStorage(item.storage)
+                setTitle(item.title)
+                break
+            }
+            case "ANSWER-TICKET": {
+                setInputAnswer(item)
+                break
+            }
+            case "DISCOUNT": {
+                setDiscountTitle(item.title)
+                setDiscountExpireType(item.expireType === "count" ? "Expiration by Usage Count" : "Expiration by Date")
+                setDiscountCategory(item.category)
+
+                if (item.expireType === "count") {
+                    setDiscountExpireCount(item.expireCount)
+                } else {
+                    setDiscountExpireDate(item.expireDate)
+                }
+
+                break
+            }
         }
     }, [item])
 
@@ -122,6 +163,31 @@ const InputModal: FC<EditUserModalProps> = (props) => {
             case "ANSWER-TICKET": {
                 editFunc(inputAnswer)
                 break
+            }
+            case "DISCOUNT": {
+                if (discountExpireType === "Expiration by Usage Count") {
+                    const newDiscount: DiscountCodeProps = {
+                        title: discountTitle,
+                        creator: item.creator,
+                        category: discountCategory,
+                        expireType: "count",
+                        expireCount: discountExpireCount,
+                        status: discountExpireCount <= 0 ? "Expired" : "Valid",
+                    }
+
+                    editFunc(newDiscount)
+                } else {
+                    const newDiscount: DiscountCodeProps = {
+                        title: discountTitle,
+                        creator: item.creator,
+                        category: discountCategory,
+                        expireType: "date",
+                        expireDate: discountExpireDate,
+                        status: discountExpireDate <= Date.now() ? "Expired" : "Valid",
+                    }
+
+                    editFunc(newDiscount)
+                }
             }
         }
     }
@@ -191,6 +257,37 @@ const InputModal: FC<EditUserModalProps> = (props) => {
                     </>
                 )
             }
+            case "DISCOUNT": {
+                return (
+                    <>
+                        <Input type="normal" placeholder="Enter discount title" value={discountTitle}
+                               setValue={setDiscountTitle} isFullWidth={true}/>
+                        <SelectBox items={discountCategories} defaultItem={discountCategory}
+                                   setDefaultItem={setDiscountCategory}
+                                   placeholder="Enter discount category"/>
+                        <SelectBox items={discountTypeItems} defaultItem={discountExpireType}
+                                   setDefaultItem={setDiscountExpireType}
+                                   placeholder="Enter expiration type"/>
+                        {
+                            discountExpireType === "Expiration by Date"
+                                ?
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <DatePicker
+                                        onChange={newDate => {
+                                            if (newDate) {
+                                                setDiscountExpireDate(newDate.valueOf() as number)
+                                            }
+                                        }}
+                                        label="enter discount epire date"/>
+                                </LocalizationProvider>
+                                :
+                                <Input type="normal" placeholder="Enter allowed number of discount codes"
+                                       value={discountExpireCount.toLocaleString()}
+                                       setValue={setDiscountExpireCount} isFullWidth={true}/>
+                        }
+                    </>
+                )
+            }
         }
     }
 
@@ -202,6 +299,8 @@ const InputModal: FC<EditUserModalProps> = (props) => {
                 return "Edit product :"
             case "ANSWER-TICKET":
                 return "Answer ticket :"
+            case "DISCOUNT":
+                return "Edit discount :"
         }
     }
 
