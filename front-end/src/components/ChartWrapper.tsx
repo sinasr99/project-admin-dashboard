@@ -1,4 +1,4 @@
-import {FC, useContext, useState} from "react";
+import {FC, useContext, useEffect, useState} from "react";
 import {Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
 import CustomTooltipRechart from "./CustomTooltipRechart";
 import {ThemeContext} from "../contextAPI/themeContext";
@@ -18,6 +18,22 @@ interface ChartWrapperProps {
 const ChartWrapper: FC<ChartWrapperProps> = ({tooltipKey, afterValue, title, data}) => {
     const [dataState, setDataState] = useState<chartDataType>(data)
     const {theme} = useContext(ThemeContext)
+    const [windowWidth, setWindowWidth] = useState<number>(getHeight())
+
+    function getHeight (): number {
+        if (window.innerWidth >= 1024)
+            return 300
+        else if (window.innerWidth >= 640)
+            return 250
+        else
+            return 150
+    }
+
+    useEffect(() => {
+        window.addEventListener("resize", () => {
+            setWindowWidth(getHeight())
+        })
+    }, [])
 
     return (
         <div
@@ -27,7 +43,7 @@ const ChartWrapper: FC<ChartWrapperProps> = ({tooltipKey, afterValue, title, dat
             </h3>
             <div
                 className="sell-chart-wrapper pr-2 sm:pr-0 max-w-[400px] h-[150px] sm:max-w-[700px] sm:w-[600px] sm:h-[250px] lg:w-[700px] lg:h-[300px] mx-auto">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height={windowWidth}>
                     <AreaChart className="mx-auto mt-7" data={dataState}>
                         <defs>
                             <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
@@ -78,7 +94,8 @@ const ChartWrapper: FC<ChartWrapperProps> = ({tooltipKey, afterValue, title, dat
                             )}
                         />
                         <CartesianGrid strokeDasharray="3 3"/>
-                        <Tooltip content={<CustomTooltipRechart tooltipKey={tooltipKey} afterValue={afterValue || ""}/>}/>
+                        <Tooltip
+                            content={<CustomTooltipRechart tooltipKey={tooltipKey} afterValue={afterValue || ""}/>}/>
                         <Area type="monotone" dataKey="value" stroke="#ff6900" fillOpacity={0.6}
                               fill="#ff6900"/>
                     </AreaChart>
