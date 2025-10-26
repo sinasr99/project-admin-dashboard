@@ -1,24 +1,27 @@
 import { Schema } from "mongoose";
 declare const _default: import("mongoose").Model<{
     name: string;
-    email: string;
     phone: string;
+    email: string;
+    isBlocked: boolean;
     password: string;
-    role: "ADMIN" | "USER";
+    role: "USER" | "ADMIN";
 } & import("mongoose").DefaultTimestampProps, {}, {}, {}, import("mongoose").Document<unknown, {}, {
     name: string;
-    email: string;
     phone: string;
+    email: string;
+    isBlocked: boolean;
     password: string;
-    role: "ADMIN" | "USER";
+    role: "USER" | "ADMIN";
 } & import("mongoose").DefaultTimestampProps, {}, {
     timestamps: true;
 }> & {
     name: string;
-    email: string;
     phone: string;
+    email: string;
+    isBlocked: boolean;
     password: string;
-    role: "ADMIN" | "USER";
+    role: "USER" | "ADMIN";
 } & import("mongoose").DefaultTimestampProps & {
     _id: import("mongoose").Types.ObjectId;
 } & {
@@ -27,24 +30,27 @@ declare const _default: import("mongoose").Model<{
     timestamps: true;
 }, {
     name: string;
-    email: string;
     phone: string;
+    email: string;
+    isBlocked: boolean;
     password: string;
-    role: "ADMIN" | "USER";
+    role: "USER" | "ADMIN";
 } & import("mongoose").DefaultTimestampProps, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<{
     name: string;
-    email: string;
     phone: string;
+    email: string;
+    isBlocked: boolean;
     password: string;
-    role: "ADMIN" | "USER";
+    role: "USER" | "ADMIN";
 } & import("mongoose").DefaultTimestampProps>, {}, import("mongoose").ResolveSchemaOptions<{
     timestamps: true;
 }>> & import("mongoose").FlatRecord<{
     name: string;
-    email: string;
     phone: string;
+    email: string;
+    isBlocked: boolean;
     password: string;
-    role: "ADMIN" | "USER";
+    role: "USER" | "ADMIN";
 } & import("mongoose").DefaultTimestampProps> & {
     _id: import("mongoose").Types.ObjectId;
 } & {
