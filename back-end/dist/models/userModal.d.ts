@@ -3,12 +3,14 @@ declare const _default: import("mongoose").Model<{
     name: string;
     phone: string;
     email: string;
+    isBlocked: boolean;
     password: string;
     role: "USER" | "ADMIN";
 } & import("mongoose").DefaultTimestampProps, {}, {}, {}, import("mongoose").Document<unknown, {}, {
     name: string;
     phone: string;
     email: string;
+    isBlocked: boolean;
     password: string;
     role: "USER" | "ADMIN";
 } & import("mongoose").DefaultTimestampProps, {}, {
@@ -17,6 +19,7 @@ declare const _default: import("mongoose").Model<{
     name: string;
     phone: string;
     email: string;
+    isBlocked: boolean;
     password: string;
     role: "USER" | "ADMIN";
 } & import("mongoose").DefaultTimestampProps & {
@@ -29,12 +32,14 @@ declare const _default: import("mongoose").Model<{
     name: string;
     phone: string;
     email: string;
+    isBlocked: boolean;
     password: string;
     role: "USER" | "ADMIN";
 } & import("mongoose").DefaultTimestampProps, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<{
     name: string;
     phone: string;
     email: string;
+    isBlocked: boolean;
     password: string;
     role: "USER" | "ADMIN";
 } & import("mongoose").DefaultTimestampProps>, {}, import("mongoose").ResolveSchemaOptions<{
@@ -43,6 +48,7 @@ declare const _default: import("mongoose").Model<{
     name: string;
     phone: string;
     email: string;
+    isBlocked: boolean;
     password: string;
     role: "USER" | "ADMIN";
 } & import("mongoose").DefaultTimestampProps> & {

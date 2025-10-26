@@ -13,6 +13,10 @@ const schema = new Schema({
         type: String,
         required: true
     },
+    isBlocked: {
+      type: Boolean,
+      default: false
+    },
     password: {
         type: String,
         required: true

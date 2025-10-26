@@ -5,8 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
 const dotenv_1 = __importDefault(require("dotenv"));
-const path_1 = __importDefault(require("path"));
-dotenv_1.default.config({ path: path_1.default.join(__dirname, "../.env") });
+dotenv_1.default.config();
 const connectToDB = async () => {
     try {
         await (0, mongoose_1.connect)(process.env.dbUrl);
